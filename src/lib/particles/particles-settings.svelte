@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { particles } from './particles.store';
+  import { particlesSettings } from './particles.store';
 </script>
 
 <article class="flex flex-col gap-4 rounded-lg border border-zinc-200/60 bg-zinc-50 p-4 shadow-md">
@@ -11,10 +11,13 @@
       class="flex-grow rounded-md bg-zinc-50"
       name="color"
       type="color"
-      bind:value={$particles.color}
+      bind:value={$particlesSettings.color}
     />
   </div>
-  <button class="rounded-lg bg-zinc-900 px-4 py-2 font-bold text-zinc-50 hover:bg-zinc-800" on:click={particles.reset}>
+  <button
+    class="rounded-lg bg-zinc-900 px-4 py-2 font-bold text-zinc-50 hover:bg-zinc-800"
+    on:click={particlesSettings.reset}
+  >
     Reset
   </button>
 </article>

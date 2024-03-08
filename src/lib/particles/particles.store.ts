@@ -21,4 +21,4 @@ function createParticles(initialValue: Particles) {
   };
 }
 
-export const particles = createParticles(settings);
+export const particlesSettings = createParticles(settings);

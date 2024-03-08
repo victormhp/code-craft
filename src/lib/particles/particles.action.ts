@@ -83,3 +83,33 @@ export class Effect {
     }
   }
 }
+
+export function particles(canvas: HTMLCanvasElement, color: string) {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+  context.strokeStyle = color;
+  context.fillStyle = color;
+
+  const effect = new Effect(canvas);
+  let frame = 0;
+
+  const animate = () => {
+    frame = requestAnimationFrame(animate);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    effect.handleParticles(context);
+  };
+
+  animate();
+
+  return {
+    update(color: string) {
+      context.strokeStyle = color;
+      context.fillStyle = color;
+    },
+    destroy() {
+      cancelAnimationFrame(frame);
+    }
+  };
+}
