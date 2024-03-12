@@ -2,6 +2,7 @@
   import 'iconify-icon';
   import { sortingSize, sortingDelay, sortingState, canStep, canStepBack } from './sorting.store';
   import { generateRandomArray, bubbleSort } from './sorting.utils';
+  import { Progress } from '$lib/ui';
 
   let frame: number;
   let timeout: number;
@@ -50,6 +51,7 @@
 
   function randomize() {
     sortingState.reset();
+    $sortingState.isPlaying = false;
     initialHeights = generateRandomArray($sortingSize, barMinHeight, barMaxHeight);
   }
 
@@ -68,12 +70,13 @@
   >
     {#each barHeights as height, i (height)}
       <div
-        data-moving={$sortingState.move.includes(i) && $sortingState.isPlaying}
+        data-moving={$sortingState.move.includes(i) && $canStep && $canStepBack}
         class="relative rounded-t-md border border-white bg-zinc-800 data-[moving=true]:bg-red-500"
         style="width: {barWidth}px; height: {height}px"
       ></div>
     {/each}
   </div>
+  <Progress max={$sortingState.total - 1} value={$sortingState.current} />
   <div
     class="flex justify-between gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
   >
@@ -81,9 +84,7 @@
       class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
       type="button"
       on:click={randomize}
-      disabled={$sortingState.isPlaying ||
-        $sortingState.current > 0 ||
-        $sortingState.current >= $sortingState.total}
+      disabled={$sortingState.isPlaying || ($canStep && $canStepBack)}
     >
       <iconify-icon icon="mingcute:shuffle-2-line" width="20" height="20" style="color: #27272a"
       ></iconify-icon>
@@ -107,6 +108,7 @@
         class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
         type="button"
         on:click={play}
+        disabled={!$canStep}
       >
         <iconify-icon
           icon={$sortingState.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
