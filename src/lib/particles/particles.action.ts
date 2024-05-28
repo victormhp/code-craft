@@ -1,34 +1,72 @@
+import type { ParticlesSettings, Mouse } from './particles.types';
+
 export class Particle {
   radius: number;
   x: number;
   y: number;
   vx: number;
   vy: number;
+  pushX: number;
+  pushY: number;
+  friction: number;
 
-  constructor(public effect: Effect) {
-    this.radius = Math.random() * 3 + 2;
+  constructor(
+    public id: number,
+    public effect: Effect
+  ) {
+    this.radius = Math.floor(Math.random() * 5 + 2);
     this.x = this.radius + Math.random() * (this.effect.width - this.radius * 2);
     this.y = this.radius + Math.random() * (this.effect.height - this.radius * 2);
     this.vx = Math.random() * 1 - 0.5;
     this.vy = Math.random() * 1 - 0.5;
+    this.pushX = 0;
+    this.pushY = 0;
+    this.friction = 0.95;
   }
 
   draw(context: CanvasRenderingContext2D) {
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     context.fill();
+    context.stroke();
   }
 
   update() {
-    this.x += this.vx;
-    if (this.x > this.effect.width - this.radius || this.x < this.radius) {
+    if (this.effect.settings.effect === 'physics' && this.effect.mouse.pressed) {
+      const dx = this.x - this.effect.mouse.x;
+      const dy = this.y - this.effect.mouse.y;
+      const distance = Math.hypot(dx, dy);
+      const force = this.effect.mouse.radius / distance;
+      if (distance < this.effect.mouse.radius) {
+        const angle = Math.atan2(dy, dx);
+        this.pushX += Math.cos(angle) * force;
+        this.pushY += Math.sin(angle) * force;
+      }
+    }
+
+    this.x += (this.pushX *= this.friction) + this.vx;
+    this.y += (this.pushY *= this.friction) + this.vy;
+
+    if (this.x < this.radius) {
+      this.x = this.radius;
+      this.vx *= -1;
+    } else if (this.x > this.effect.width - this.radius) {
+      this.x = this.effect.width - this.radius;
       this.vx *= -1;
     }
 
-    this.y += this.vy;
-    if (this.y > this.effect.height - this.radius || this.y < this.radius) {
+    if (this.y < this.radius) {
+      this.y = this.radius;
+      this.vy *= -1;
+    } else if (this.y > this.effect.height - this.radius) {
+      this.y = this.effect.height - this.radius;
       this.vy *= -1;
     }
+  }
+
+  reset() {
+    this.x = this.radius + Math.random() * (this.effect.width - this.radius * 2);
+    this.y = this.radius + Math.random() * (this.effect.height - this.radius * 2);
   }
 }
 
@@ -37,19 +75,51 @@ export class Effect {
   height: number;
   count: number;
   particles: Particle[];
+  mouse: Mouse;
 
-  constructor(public canvas: HTMLCanvasElement) {
+  constructor(
+    public canvas: HTMLCanvasElement,
+    public context: CanvasRenderingContext2D,
+    public settings: ParticlesSettings
+  ) {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
+    this.count = Math.floor(this.canvas.width / 5);
     this.particles = [];
-    this.count = 350;
-
+    this.mouse = {
+      x: 0,
+      y: 0,
+      pressed: false,
+      radius: 150
+    };
     this.createParticles();
+    console.log(this.count);
+
+    window.addEventListener('resize', () => {
+      this.resize(window.innerWidth, window.innerHeight);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (this.mouse.pressed) {
+        this.mouse.x = e.x;
+        this.mouse.y = e.y;
+      }
+    });
+
+    window.addEventListener('mousedown', (e) => {
+      this.mouse.pressed = true;
+      this.mouse.x = e.x;
+      this.mouse.y = e.y;
+    });
+
+    window.addEventListener('mouseup', () => {
+      this.mouse.pressed = false;
+    });
   }
 
   createParticles() {
     for (let i = 0; i < this.count; i++) {
-      this.particles.push(new Particle(this));
+      this.particles.push(new Particle(i, this));
     }
   }
 
@@ -82,17 +152,27 @@ export class Effect {
       }
     }
   }
+
+  resize(width: number, height: number) {
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.width = width;
+    this.height = height;
+    this.context.fillStyle = this.settings.color;
+    this.context.strokeStyle = this.settings.stroke;
+    this.particles.forEach((p) => p.reset());
+  }
 }
 
-export function particles(canvas: HTMLCanvasElement, color: string) {
+export function particlesAction(canvas: HTMLCanvasElement, settings: ParticlesSettings) {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  context.strokeStyle = color;
-  context.fillStyle = color;
+  context.fillStyle = settings.color;
+  context.strokeStyle = settings.stroke;
 
-  const effect = new Effect(canvas);
+  const effect = new Effect(canvas, context, settings);
   let frame = 0;
 
   const animate = () => {
@@ -104,9 +184,10 @@ export function particles(canvas: HTMLCanvasElement, color: string) {
   animate();
 
   return {
-    update(color: string) {
-      context.strokeStyle = color;
-      context.fillStyle = color;
+    update(settings: ParticlesSettings) {
+      context.fillStyle = settings.color;
+      context.strokeStyle = settings.stroke;
+      effect.settings.effect = settings.effect;
     },
     destroy() {
       cancelAnimationFrame(frame);

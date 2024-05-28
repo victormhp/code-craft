@@ -1,18 +1,21 @@
 import { writable } from 'svelte/store';
+import type { ParticlesSettings } from './particles.types';
 
-interface Particles {
-  color: string;
-}
-
-const settings: Particles = {
-  color: '#d4d4d8'
+const settings: ParticlesSettings = {
+  color: '#ffffff',
+  stroke: '#a1a1aa',
+  effect: 'none'
 };
 
-function createParticles(initialValue: Particles) {
-  const particles = writable<Particles>(initialValue);
+function createParticles(initialValue: ParticlesSettings) {
+  const particles = writable<ParticlesSettings>(initialValue);
 
   function reset() {
-    particles.set({ color: '#d4d4d8' });
+    particles.set({
+      color: '#ffffff',
+      stroke: '#a1a1aa',
+      effect: 'none'
+    });
   }
 
   return {
