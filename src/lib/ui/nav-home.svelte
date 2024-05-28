@@ -11,7 +11,7 @@
 </script>
 
 <header class="fixed left-0 top-0 z-50 w-full bg-transparent px-4 py-3 lg:px-16 lg:py-6">
-  <nav class="flex items-center justify-between">
+  <nav class="flex items-center justify-between select-none">
     <div class="hidden lg:flex lg:gap-4">
       <a
         class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"

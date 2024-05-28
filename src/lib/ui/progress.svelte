@@ -8,7 +8,7 @@
 </script>
 
 <div
-  class="progress-animation bg-zinc-200 h-3 w-full overflow-hidden rounded-lg transition-all"
+  class="progress-animation h-3 w-full overflow-hidden rounded-lg bg-zinc-200 transition-all"
   data-testid="progress-bar"
   role="progressbar"
   aria-labelledby={labelledby}
