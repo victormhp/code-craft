@@ -1,9 +1,13 @@
 import { writable } from 'svelte/store';
 import type { ParticlesSettings } from './particles.types';
 
+const WHITE = '#ffffff';
+const GRAY = '#a1a1aa';
+
 const settings: ParticlesSettings = {
-  color: '#ffffff',
-  stroke: '#a1a1aa',
+  color: WHITE,
+  stroke: GRAY,
+  fill: false,
   effect: 'none'
 };
 
@@ -12,15 +16,25 @@ function createParticles(initialValue: ParticlesSettings) {
 
   function reset() {
     particles.set({
-      color: '#ffffff',
-      stroke: '#a1a1aa',
+      color: WHITE,
+      stroke: GRAY,
+      fill: false,
       effect: 'none'
     });
   }
 
+  function toggleFill() {
+    particles.update((curr) => ({
+      ...curr,
+      fill: !curr.fill,
+      color: curr.fill ? WHITE : curr.stroke
+    }));
+  }
+
   return {
     ...particles,
-    reset
+    reset,
+    toggleFill
   };
 }
 

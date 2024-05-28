@@ -93,7 +93,6 @@ export class Effect {
       radius: 150
     };
     this.createParticles();
-    console.log(this.count);
 
     window.addEventListener('resize', () => {
       this.resize(window.innerWidth, window.innerHeight);
