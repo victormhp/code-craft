@@ -25,6 +25,16 @@ export class Particle {
   }
 
   draw(context: CanvasRenderingContext2D) {
+    if (this.effect.settings.effect === 'sunrays' && this.id % 5 === 0) {
+      context.save();
+      context.globalAlpha = 0.45;
+      context.beginPath();
+      context.moveTo(this.x, this.y);
+      context.lineTo(this.effect.mouse.x, this.effect.mouse.y);
+      context.stroke();
+      context.restore;
+    }
+
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     context.fill();
@@ -37,6 +47,7 @@ export class Particle {
       const dy = this.y - this.effect.mouse.y;
       const distance = Math.hypot(dx, dy);
       const force = this.effect.mouse.radius / distance;
+
       if (distance < this.effect.mouse.radius) {
         const angle = Math.atan2(dy, dx);
         this.pushX += Math.cos(angle) * force;
@@ -99,6 +110,11 @@ export class Effect {
     });
 
     window.addEventListener('mousemove', (e) => {
+      if (this.settings.effect === 'sunrays') {
+        this.particles.forEach((p) => {
+          p.draw(this.context);
+        });
+      }
       if (this.mouse.pressed) {
         this.mouse.x = e.x;
         this.mouse.y = e.y;
@@ -120,6 +136,10 @@ export class Effect {
     for (let i = 0; i < this.count; i++) {
       this.particles.push(new Particle(i, this));
     }
+  }
+
+  deleteParticles() {
+    this.particles = [];
   }
 
   handleParticles(context: CanvasRenderingContext2D) {
@@ -160,6 +180,9 @@ export class Effect {
     this.context.fillStyle = this.settings.color;
     this.context.strokeStyle = this.settings.stroke;
     this.particles.forEach((p) => p.reset());
+    this.deleteParticles();
+    this.count = Math.floor(width / 5);
+    this.createParticles();
   }
 }
 
