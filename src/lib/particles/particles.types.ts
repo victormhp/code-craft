@@ -1,7 +1,6 @@
 export interface ParticlesSettings {
   color: string;
   stroke: string;
-  fill: boolean;
   effect: 'physics' | 'sunrays' | 'none';
 }
 

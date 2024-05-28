@@ -12,7 +12,7 @@
     <h2 class="mb-4 border-b border-zinc-200 pb-1 text-lg font-bold">Particles Settings</h2>
     <div class="flex flex-col gap-2">
       <div class="flex justify-between gap-4">
-        <label for="particles-color">Color</label>
+        <label for="particles-color">Stroke Color</label>
         <input
           id="particles-color"
           class="flex-grow rounded-md bg-zinc-50"
@@ -21,16 +21,15 @@
           bind:value={$particlesSettings.stroke}
         />
       </div>
-      <div class="flex gap-4">
+      <div class="flex justify-between gap-4">
+        <label for="particles-color">Fill Color</label>
         <input
-          id="particles-fill"
-          class="rounded-md bg-zinc-50"
-          name="fill"
-          type="checkbox"
-          on:input={particlesSettings.toggleFill}
-          bind:checked={$particlesSettings.fill}
+          id="particles-color"
+          class="flex-grow rounded-md bg-zinc-50"
+          name="color"
+          type="color"
+          bind:value={$particlesSettings.color}
         />
-        <label for="particles-fill">Fill</label>
       </div>
     </div>
   </div>
