@@ -18,7 +18,7 @@
     class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] place-items-center gap-4 px-8 pb-10 pt-20 aria-hidden:hidden lg:gap-8 lg:pb-16 lg:pt-32"
   >
     {#each routes as { title, img, path }}
-      <article class="rounded-lg border border-zinc-200/60 bg-zinc-50 p-4 shadow-md">
+      <article class="select-none rounded-lg border border-zinc-200/60 bg-zinc-50 p-4 shadow-md">
         <div class="px-2 py-4">
           <a href={path}>
             <img src={img} alt={title} />
