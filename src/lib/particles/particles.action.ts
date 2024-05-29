@@ -26,13 +26,10 @@ export class Particle {
 
   draw(context: CanvasRenderingContext2D) {
     if (this.effect.settings.effect === 'sunrays' && this.id % 5 === 0) {
-      context.save();
-      context.globalAlpha = 0.45;
       context.beginPath();
       context.moveTo(this.x, this.y);
       context.lineTo(this.effect.mouse.x, this.effect.mouse.y);
       context.stroke();
-      context.restore;
     }
 
     context.beginPath();
@@ -110,11 +107,6 @@ export class Effect {
     });
 
     window.addEventListener('mousemove', (e) => {
-      if (this.settings.effect === 'sunrays') {
-        this.particles.forEach((p) => {
-          p.draw(this.context);
-        });
-      }
       if (this.mouse.pressed) {
         this.mouse.x = e.x;
         this.mouse.y = e.y;
@@ -122,9 +114,13 @@ export class Effect {
     });
 
     window.addEventListener('mousedown', (e) => {
-      this.mouse.pressed = true;
-      this.mouse.x = e.x;
-      this.mouse.y = e.y;
+      const target = e.target as HTMLElement;
+      // Check if the user clicks in a button or menu from the main page
+      if (!target.closest('button') && !target.closest('a') && !target.closest('article')) {
+        this.mouse.pressed = true;
+        this.mouse.x = e.x;
+        this.mouse.y = e.y;
+      }
     });
 
     window.addEventListener('mouseup', () => {
