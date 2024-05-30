@@ -14,7 +14,7 @@ export class Particle {
     public id: number,
     public effect: Effect
   ) {
-    this.radius = Math.floor(Math.random() * 5 + 2);
+    this.radius = Math.floor(Math.random() * 4 + 2);
     this.x = this.radius + Math.random() * (this.effect.width - this.radius * 2);
     this.y = this.radius + Math.random() * (this.effect.height - this.radius * 2);
     this.vx = Math.random() * 1 - 0.5;
@@ -82,6 +82,7 @@ export class Effect {
   width: number;
   height: number;
   count: number;
+  connectDistance: number;
   particles: Particle[];
   mouse: Mouse;
 
@@ -93,6 +94,7 @@ export class Effect {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
     this.count = Math.floor(this.canvas.width / 5);
+    this.connectDistance = 100;
     this.particles = [];
     this.mouse = {
       x: 0,
@@ -107,10 +109,8 @@ export class Effect {
     });
 
     window.addEventListener('mousemove', (e) => {
-      if (this.mouse.pressed) {
-        this.mouse.x = e.x;
-        this.mouse.y = e.y;
-      }
+      this.mouse.x = e.x;
+      this.mouse.y = e.y;
     });
 
     window.addEventListener('mousedown', (e) => {
@@ -140,30 +140,68 @@ export class Effect {
 
   handleParticles(context: CanvasRenderingContext2D) {
     this.connectParticles(context);
+    this.connectParticlesToMouse(context);
 
     this.particles.forEach((particle) => {
       particle.draw(context);
       particle.update();
     });
   }
+  drawLine(
+    context: CanvasRenderingContext2D,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    opacity: number
+  ) {
+    context.save();
+    context.globalAlpha = opacity;
+    context.beginPath();
+    context.moveTo(x1, y1);
+    context.lineTo(x2, y2);
+    context.stroke();
+    context.restore();
+  }
 
   connectParticles(context: CanvasRenderingContext2D) {
-    const maxDistance = 100;
     for (let i = 0; i < this.particles.length; i++) {
       for (let j = i; j < this.particles.length; j++) {
         const dx = this.particles[i].x - this.particles[j].x;
         const dy = this.particles[i].y - this.particles[j].y;
         const distance = Math.hypot(dx, dy);
 
-        if (distance < maxDistance) {
-          const opacity = 1 - distance / maxDistance;
-          context.globalAlpha = opacity;
-          context.beginPath();
-          context.moveTo(this.particles[i].x, this.particles[i].y);
-          context.lineTo(this.particles[j].x, this.particles[j].y);
-          context.stroke();
-          context.restore();
+        if (distance < this.connectDistance) {
+          const opacity = 1 - distance / this.connectDistance;
+          this.drawLine(
+            context,
+            this.particles[i].x,
+            this.particles[i].y,
+            this.particles[j].x,
+            this.particles[j].y,
+            opacity
+          );
         }
+      }
+    }
+  }
+
+  connectParticlesToMouse(context: CanvasRenderingContext2D) {
+    for (let i = 0; i < this.particles.length; i++) {
+      const dx = this.particles[i].x - this.mouse.x;
+      const dy = this.particles[i].y - this.mouse.y;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance < this.connectDistance) {
+        const opacity = 1 - distance / this.connectDistance;
+        this.drawLine(
+          context,
+          this.particles[i].x,
+          this.particles[i].y,
+          this.mouse.x,
+          this.mouse.y,
+          opacity
+        );
       }
     }
   }
