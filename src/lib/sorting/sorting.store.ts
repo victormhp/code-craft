@@ -1,10 +1,16 @@
 import { derived, writable } from 'svelte/store';
 
 export const sortingSize = writable(15);
-
 export const sortingDelay = writable(50);
 
+export enum SortingAlgorithm {
+  bubble = 'Bubble Sort',
+  merge = 'Merge Sort',
+  quick = 'Quick Sort'
+}
+
 interface SortingState {
+  algorithm: SortingAlgorithm;
   isPlaying: boolean;
   move: number[];
   current: number;
@@ -12,6 +18,7 @@ interface SortingState {
 }
 
 const state: SortingState = {
+  algorithm: SortingAlgorithm.bubble,
   isPlaying: false,
   move: [0, 1],
   current: 0,
