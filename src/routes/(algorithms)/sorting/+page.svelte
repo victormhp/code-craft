@@ -7,7 +7,7 @@
 </svelte:head>
 
 <main
-  class="flex flex-col-reverse gap-8 px-4 pt-24 lg:grid lg:grid-cols-[2fr,5fr] lg:px-16 lg:pt-32"
+  class="flex flex-col-reverse gap-8 px-4 py-24 lg:grid lg:h-screen lg:grid-cols-[2fr,5fr] lg:px-16 lg:py-32"
 >
   <SortingSettings />
   <SortingVisualizer />

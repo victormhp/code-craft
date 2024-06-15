@@ -10,9 +10,9 @@
   <title>Code Craft</title>
 </svelte:head>
 
+<Particles />
 <NavHome />
 <main class="relative flex min-h-screen w-full items-center justify-center">
-  <Particles />
   <section
     aria-hidden={!$isMenuOpened}
     class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] place-items-center gap-4 px-8 pb-10 pt-20 aria-hidden:hidden lg:gap-8 lg:pb-16 lg:pt-32"
