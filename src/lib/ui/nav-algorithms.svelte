@@ -10,7 +10,7 @@
       <img class="size-12" src="logo-no-bg.svg" alt="Web logo" />
       <h1 class="font-virgil text-2xl font-bold tracking-wider lg:text-3xl">Code Craft</h1>
     </a>
-    <div class="hidden lg:flex lg:gap-4">
+    <div class="flex gap-4">
       <a
         class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://www.linkedin.com/in/victormhp"
