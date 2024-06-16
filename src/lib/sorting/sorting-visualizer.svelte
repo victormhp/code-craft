@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { navigating } from '$app/stores';
   import 'iconify-icon';
   import {
     sortingSize,
@@ -74,8 +73,6 @@
     sortingState.reset();
     $sortingState.isPlaying = false;
   }
-
-  // $: if ($navigating) restart();
 </script>
 
 <svelte:window on:keyup={playOnKey} />

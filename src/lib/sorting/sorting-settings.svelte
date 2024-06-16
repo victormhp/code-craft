@@ -41,11 +41,11 @@
           type="range"
           bind:value={$sortingDelay}
           min="1"
-          max="400"
+          max="1024"
           disabled={$sortingState.current > 0}
         />
         <p class="rounded border border-zinc-300 px-2 py-1 shadow-sm">
-          {Math.floor($sortingDelay / 4)}
+          {$sortingDelay} ms
         </p>
       </div>
     </div>
@@ -59,7 +59,7 @@
           type="range"
           bind:value={$sortingSize}
           min="10"
-          max="50"
+          max="64"
           disabled={$sortingState.current > 0}
         />
         <p class="rounded border border-zinc-300 px-2 py-1 shadow-sm">{$sortingSize}</p>
@@ -71,7 +71,7 @@
     <div class="flex flex-col gap-4">
       {#each sortingColors as { color, status }}
         <div class="flex items-center gap-2">
-          <div class="flex h-4 w-4 items-center justify-center rounded-full border border-zinc-300">
+          <div class="flex h-4 w-4 items-center justify-center rounded-full border border-zinc-400">
             <div class={`h-2 w-2 rounded-full ${color}`} />
           </div>
           <p class="text-zinc-400">{status}</p>
