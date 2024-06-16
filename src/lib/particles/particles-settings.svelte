@@ -9,7 +9,7 @@
 
 <article class="flex flex-col gap-6 rounded-lg border border-zinc-200/60 bg-zinc-50 p-4 shadow-md">
   <div>
-    <h2 class="mb-4 border-b border-zinc-200 pb-1 text-lg font-bold">Particles Settings</h2>
+    <h2 class="mb-4 border-b border-zinc-200 pb-1 text-lg font-bold">Particle Settings</h2>
     <div class="flex flex-col gap-2">
       <div class="flex justify-between gap-4">
         <label for="particles-color">Stroke Color</label>
