@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { navigating } from '$app/stores';
   import 'iconify-icon';
   import {
     sortingSize,
@@ -16,8 +17,8 @@
   let timeout: number;
   let rectWidth: number;
   let rectsContainerWidth: number;
-  let rectMinHeight = 10;
-  let rectMaxHeight = 400;
+  let rectMinHeight = 20;
+  let rectMaxHeight = 450;
 
   $: rectWidth = rectsContainerWidth / $sortingSize;
   $: initialHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
@@ -56,6 +57,12 @@
     }
   }
 
+  function playOnKey(event: KeyboardEvent) {
+    if (event.key === ' ') {
+      play();
+    }
+  }
+
   function randomize() {
     sortingState.reset();
     $sortingState.isPlaying = false;
@@ -67,19 +74,23 @@
     sortingState.reset();
     $sortingState.isPlaying = false;
   }
+
+  // $: if ($navigating) restart();
 </script>
+
+<svelte:window on:keyup={playOnKey} />
 
 <div class="flex flex-col gap-4">
   <div
     bind:clientWidth={rectsContainerWidth}
-    class="mb-4 flex w-full items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm grow"
+    class="mb-4 flex w-full grow items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
     style="height: {rectMaxHeight + 100}px"
   >
     {#each rectHeights as rectHeight, i}
       <Rect id={i} width={rectWidth} height={rectHeight} move={moves[$sortingState.current]} />
     {/each}
   </div>
-  <div class="space-y-4 mt-auto">
+  <div class="mt-auto space-y-4">
     <Progress max={$sortingState.total - 1} value={$sortingState.current} />
     <div
       class="flex justify-between gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
@@ -118,7 +129,7 @@
             icon={$sortingState.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
             width="20"
             height="20"
-            style="color: #18181b"
+            style="color: #27272a"
           ></iconify-icon>
         </button>
         <button

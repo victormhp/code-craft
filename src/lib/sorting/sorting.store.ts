@@ -15,11 +15,13 @@ export const sortingAlgorithmsRecord = [
   { algorithmName: SortingAlgorithms.MergeSort, algorithmFunction: mergeSortStates }
 ];
 
-// Sorting stores
+// Sorting Settings Stores
 export const sortingSize = writable(15);
 export const sortingDelay = writable(50);
+export const sortingShowValues = writable(false);
 export const sortingAlgorithm = writable<SortingFunction>(bubbleSort);
 
+// Sorting State Store
 interface SortingStateStore {
   algorithm: SortingAlgorithms;
   isPlaying: boolean;
