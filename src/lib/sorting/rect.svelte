@@ -12,7 +12,7 @@
 
   $: isMoving = $sortingState.move.includes(id) && $canStep && $canStepBack;
   $: {
-    if (id === move[0] && id === move[1]) {
+    if ((id === move[0] && id === move[1]) || $sortingState.current + 1 == $sortingState.total) {
       sorted = true;
       sortedMoveIndex = $sortingState.current;
     } else if ($sortingState.current < 1 || $sortingState.current < sortedMoveIndex) {

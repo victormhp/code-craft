@@ -1,5 +1,5 @@
 import { derived, writable } from 'svelte/store';
-import { bubbleSort, mergeSort } from './sorting.utils';
+import { bubbleSort, mergeSortStates } from './sorting.utils';
 
 // Sorting algorithm function types
 enum SortingAlgorithms {
@@ -7,13 +7,12 @@ enum SortingAlgorithms {
   MergeSort = 'Merge Sort'
 }
 
-export type SortingFunction = (
-  arr: number[],
-) => { moves: number[][]; states: number[][] };
+export type SortingStates = Record<'moves' | 'states', number[][]>;
+export type SortingFunction = (arr: number[]) => SortingStates;
 
 export const sortingAlgorithmsRecord = [
   { algorithmName: SortingAlgorithms.BubbleSort, algorithmFunction: bubbleSort },
-  { algorithmName: SortingAlgorithms.MergeSort, algorithmFunction: mergeSort }
+  { algorithmName: SortingAlgorithms.MergeSort, algorithmFunction: mergeSortStates }
 ];
 
 // Sorting stores
@@ -21,7 +20,7 @@ export const sortingSize = writable(15);
 export const sortingDelay = writable(50);
 export const sortingAlgorithm = writable<SortingFunction>(bubbleSort);
 
-interface SortingState {
+interface SortingStateStore {
   algorithm: SortingAlgorithms;
   isPlaying: boolean;
   move: number[];
@@ -29,7 +28,7 @@ interface SortingState {
   total: number;
 }
 
-const initialState: SortingState = {
+const initialState: SortingStateStore = {
   algorithm: SortingAlgorithms.BubbleSort,
   isPlaying: false,
   move: [0, 1],
@@ -37,8 +36,8 @@ const initialState: SortingState = {
   total: 0
 };
 
-function createSortingState(initialValue: SortingState) {
-  const sortingState = writable<SortingState>(initialValue);
+function createSortingState(initialValue: SortingStateStore) {
+  const sortingState = writable<SortingStateStore>(initialValue);
 
   function step() {
     sortingState.update((state) => {

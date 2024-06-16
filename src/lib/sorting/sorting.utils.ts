@@ -1,4 +1,4 @@
-import type { SortingFunction } from './sorting.store';
+import type { SortingStates, SortingFunction } from './sorting.store';
 
 export function generateRandomArray(length: number, start: number, end: number): number[] {
   const uniqueNumbers: Set<number> = new Set();
@@ -11,81 +11,83 @@ export function generateRandomArray(length: number, start: number, end: number):
   return Array.from(uniqueNumbers);
 }
 
+function range(start: number, end: number) {
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+}
+
 export const bubbleSort: SortingFunction = (arr: number[]) => {
-  const moves: number[][] = [];
-  const states: number[][] = [];
+  const values: SortingStates = { moves: [[]], states: [[...arr]] };
 
   for (let i = 0; i < arr.length - 1; i++) {
     for (let j = 0; j < arr.length - i - 1; j++) {
       if (arr[j] > arr[j + 1]) {
         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
 
-        moves.push([j, j + 1]);
-        states.push([...arr]);
+        values.moves.push([j, j + 1]);
+        values.states.push([...arr]);
       } else {
-        moves.push([j, j + 1]);
-        states.push([...arr]);
+        values.moves.push([j, j + 1]);
+        values.states.push([...arr]);
       }
 
       if (j === arr.length - i - 2) {
-        moves.push([arr.length - i - 1, arr.length - i - 1]);
-        states.push([...arr]);
+        values.moves.push([arr.length - i - 1, arr.length - i - 1]);
+        values.states.push([...arr]);
       }
     }
   }
-  moves.push([0, 0]);
-  states.push([...arr]);
-  return { moves, states };
+
+  values.moves.push([0, 0]);
+  values.states.push([...arr]);
+
+  return values;
 };
 
-export const mergeSort: SortingFunction = (arr: number[]) => {
-  //   if (arr.length <= 1) return;
-  //
-  //   const mid = Math.floor(arr.length / 2);
-  //   const left = arr.slice(0, mid);
-  //   const right = arr.slice(mid);
-  //
-  //   return merge(mergeSort(left), mergeSort(right));
-  // };
-  //
-  // const merge = (left: number[], right: number[]): { moves: number[][]; states: number[][] } => {
-  //   const moves: number[][] = [];
-  //   const states: number[][] = [];
-  //   const arr = [];
-  //   let l = 0;
-  //   let r = 0;
-  //
-  //   while (l < left.length && r < right.length) {
-  //     if (left[l] < right[r]) {
-  //       arr.push(left[l]);
-  //       l++;
-  //     } else {
-  //       arr.push(right[r]);
-  //       r++;
-  //     }
-  //   }
-  //
-  //   return arr.concat(left.slice(l)).concat(right.slice(r));
-  const moves: number[][] = [];
-  const states: number[][] = [];
-  let swapped: boolean;
+export const mergeSortStates: SortingFunction = (arr: number[]) => {
+  const values: SortingStates = { moves: [[]], states: [[...arr]] };
+  mergeSort(arr, 0, arr.length - 1, values);
+  return values;
+};
 
-  for (let i = 0; i < arr.length - 1; i++) {
-    swapped = false;
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        swapped = true;
+function mergeSort(arr: number[], l: number, r: number, values: SortingStates) {
+  if (l >= r) return;
 
-        moves.push([j, j + 1]);
-        states.push([...arr]);
-      } else {
-        moves.push([j, j + 1]);
-        states.push([...arr]);
-      }
+  const mid = l + Math.floor((r - l) / 2);
+  mergeSort(arr, l, mid, values);
+  mergeSort(arr, mid + 1, r, values);
+  merge(arr, l, mid, r);
+
+  values.moves.push(range(l, r));
+  values.states.push(arr.slice());
+}
+
+function merge(arr: number[], l: number, m: number, r: number) {
+  const leftArr = arr.slice(l, m + 1);
+  const rightArr = arr.slice(m + 1, r + 1);
+  let i = 0;
+  let j = 0;
+  let k = l;
+
+  while (i < leftArr.length && j < rightArr.length) {
+    if (leftArr[i] <= rightArr[j]) {
+      arr[k] = leftArr[i];
+      i++;
+    } else {
+      arr[k] = rightArr[j];
+      j++;
     }
-    if (!swapped) break;
+    k++;
   }
 
-  return { moves, states };
-};
+  while (i < leftArr.length) {
+    arr[k] = leftArr[i];
+    i++;
+    k++;
+  }
+
+  while (j < rightArr.length) {
+    arr[k] = rightArr[j];
+    j++;
+    k++;
+  }
+}
