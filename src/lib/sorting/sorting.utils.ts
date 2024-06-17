@@ -43,6 +43,27 @@ export const bubbleSort: SortingFunction = (arr: number[]) => {
   return values;
 };
 
+export const insertionSort: SortingFunction = (arr: number[]) => {
+  const values: SortingStates = { moves: [[]], states: [[...arr]] };
+
+  for (let i = 1; i < arr.length; i++) {
+    const key = arr[i];
+    let j = i - 1;
+    while (j >= 0 && key < arr[j]) {
+      arr[j + 1] = arr[j];
+      arr[j] = key;
+      values.states.push([...arr]);
+      values.moves.push([j, j + 1]);
+      j--;
+    }
+    // arr[j + 1] = key;
+  }
+
+  arr.forEach((_, i) => values.moves.push([i, i]));
+
+  return values;
+};
+
 export const mergeSortStates: SortingFunction = (arr: number[]) => {
   const values: SortingStates = { moves: [[]], states: [[...arr]] };
   mergeSort(arr, 0, arr.length - 1, values);
