@@ -56,9 +56,21 @@
     }
   }
 
-  function playOnKey(event: KeyboardEvent) {
-    if (event.key === ' ') {
-      play();
+  function keysControls(event: KeyboardEvent) {
+    switch (event.key) {
+      case ' ':
+        play();
+        break;
+      case 'ArrowLeft':
+        if ($sortingState.current > 0 && canStepBack) {
+          sortingState.stepBack();
+        }
+        break;
+      case 'ArrowRight':
+        if ($sortingState.current + 1 < $sortingState.total && canStep) {
+          sortingState.step();
+        }
+        break;
     }
   }
 
@@ -75,7 +87,7 @@
   }
 </script>
 
-<svelte:window on:keyup={playOnKey} />
+<svelte:window on:keydown={keysControls} />
 
 <div class="flex flex-col gap-4">
   <div
@@ -84,7 +96,7 @@
     style="height: {rectMaxHeight + 100}px"
   >
     {#each rectHeights as rectHeight, i}
-      <Rect id={i} width={rectWidth} height={rectHeight} move={moves[$sortingState.current]} />
+      <Rect id={i} width={rectWidth} height={rectHeight} />
     {/each}
   </div>
   <div class="mt-auto space-y-4">
