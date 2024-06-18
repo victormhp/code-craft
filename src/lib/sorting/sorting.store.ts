@@ -1,10 +1,11 @@
 import { derived, writable } from 'svelte/store';
-import { bubbleSort, insertionSort, mergeSortStates } from './sorting.utils';
+import { bubbleSort, insertionSort, mergeSortStates, selectionSort } from './sorting.utils';
 
 // Sorting algorithm function types
 enum SortingAlgorithms {
   BubbleSort = 'Bubble Sort',
   InsertionSort = 'Insertion Sort',
+  SelectionSort = 'Selection Sort',
   MergeSort = 'Merge Sort'
 }
 
@@ -14,6 +15,7 @@ export type SortingFunction = (arr: number[]) => SortingStates;
 export const sortingAlgorithmsRecord = [
   { algorithmName: SortingAlgorithms.BubbleSort, algorithmFunction: bubbleSort },
   { algorithmName: SortingAlgorithms.InsertionSort, algorithmFunction: insertionSort },
+  { algorithmName: SortingAlgorithms.SelectionSort, algorithmFunction: selectionSort },
   { algorithmName: SortingAlgorithms.MergeSort, algorithmFunction: mergeSortStates }
 ];
 

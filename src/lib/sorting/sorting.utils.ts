@@ -64,6 +64,28 @@ export const insertionSort: SortingFunction = (arr: number[]) => {
   return values;
 };
 
+export const selectionSort: SortingFunction = (arr: number[]) => {
+  const values: SortingStates = { moves: [[]], states: [[...arr]] };
+
+  for (let i = 0; i < arr.length; i++) {
+    let minIndex = i;
+
+    for (let j = i + 1; j < arr.length; j++) {
+      values.moves.push([j, minIndex]);
+      values.states.push([...arr]);
+      if (arr[minIndex] > arr[j]) {
+        minIndex = j;
+      }
+    }
+
+    values.moves.push([i, minIndex]);
+    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    values.states.push([...arr]);
+  }
+
+  return values;
+};
+
 export const mergeSortStates: SortingFunction = (arr: number[]) => {
   const values: SortingStates = { moves: [[]], states: [[...arr]] };
   mergeSort(arr, 0, arr.length - 1, values);
