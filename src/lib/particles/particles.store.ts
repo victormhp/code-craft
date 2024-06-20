@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 import type { ParticlesSettings } from './particles.types';
 
 const WHITE = '#ffffff';
-const GRAY = '#a1a1aa';
+const GRAY = '#bababa';
 
 const settings: ParticlesSettings = {
   color: WHITE,
