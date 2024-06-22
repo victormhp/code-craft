@@ -17,26 +17,21 @@
 
 <Particles />
 <NavHome />
-<main
-  class="relative mx-auto flex min-h-screen w-[min(80rem,100%-4rem)] items-center justify-center pb-10 pt-20 lg:pb-16 lg:pt-32"
->
+<main class="mx-auto flex w-[min(80rem,100%-4rem)] items-center justify-center py-8">
   {#if $isMenuOpened}
     <section
       in:fade={{ duration: 200 }}
       out:fade={{ duration: 200 }}
-      class="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] place-items-center gap-8 select-none"
+      class="grid w-full select-none grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] place-items-center gap-8"
     >
       {#each routes as { title, img, path }}
-        <article
-          class="flex h-full w-full flex-col justify-between gap-2 rounded-lg border border-zinc-200/60 bg-zinc-50 p-4 shadow-md"
-        >
-          <div class="text-center">
-            <a href={path}>
-              <img class="inline-block" src={img} alt={title} />
-            </a>
-          </div>
-          <h2 class="text-center font-virgil text-xl">{title}</h2>
-        </article>
+        <a href={path} class="contents">
+          <img
+            class="h-full rounded-lg border border-zinc-200/60 bg-zinc-50 px-8 py-4 shadow-md transition-transform hover:scale-[1.035]"
+            src={img}
+            alt={title}
+          />
+        </a>
       {/each}
     </section>
   {/if}

@@ -6,9 +6,7 @@
   <title>Sorting Algorithms</title>
 </svelte:head>
 
-<main
-  class="flex flex-col-reverse gap-8 px-4 py-24 lg:grid lg:h-screen lg:grid-cols-[2fr,5fr] lg:px-16 lg:py-32"
->
+<main class="flex flex-col-reverse gap-8 px-4 py-8 lg:grid lg:grid-cols-[2fr,5fr] lg:p-16">
   <SortingSettings />
   <SortingVisualizer />
 </main>

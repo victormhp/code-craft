@@ -31,9 +31,11 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #fafafa;
   font-family: 'Roboto';
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 img,
@@ -60,6 +62,7 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion) {
+
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
