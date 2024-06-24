@@ -24,6 +24,8 @@ export const sortingSize = writable(15);
 
 export const sortingDelay = writable(100);
 
+export const sortingRectColor = writable('#27272a');
+
 export const sortingShowValues = writable(false);
 
 type SortingOrder = 'Random' | 'Reverse';

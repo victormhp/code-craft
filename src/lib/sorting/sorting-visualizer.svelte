@@ -17,6 +17,7 @@
   let timeout: number;
   let rectWidth: number;
   let rectsContainerWidth: number;
+  let rectsContainerHeight: number;
   let rectMinHeight = 20;
   let rectMaxHeight = 450;
   let initialHeights: number[] = [];
@@ -100,6 +101,7 @@
 <div class="flex flex-col gap-4">
   <div
     bind:clientWidth={rectsContainerWidth}
+    bind:clientHeight={rectsContainerHeight}
     class="mb-4 flex w-full grow items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
     style="height: {rectMaxHeight + 100}px"
   >
