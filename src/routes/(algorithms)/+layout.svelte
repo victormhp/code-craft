@@ -1,6 +1,6 @@
 <script>
-  import { NavAlgorithms } from '$lib/ui';
+  import { NavAlgorithms } from '$lib/components';
 </script>
 
-  <NavAlgorithms />
-  <slot />
+<NavAlgorithms />
+<slot />

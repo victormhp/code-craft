@@ -7,6 +7,7 @@
   let nodeSize = 25;
 
   const pathfindingAlgorithms = ['Dijkstra', 'A Star', 'Breath First Search', 'Depth First Search'];
+  const pathfindingMazes = ['-', 'Recursive Maze', 'Random Maze'];
 
   $: gridRows = Math.floor(gridHeight / nodeSize);
   $: gridColumns = Math.floor(gridWidth / nodeSize);
@@ -31,8 +32,8 @@
     <div class="flex flex-col items-start gap-1">
       <label class="pl-1 text-sm text-zinc-500" for="maze">Maze</label>
       <select id="maze" class="rounded border border-zinc-200 bg-zinc-50 p-2">
-        {#each pathfindingAlgorithms as algorithm}
-          <option value={algorithm}>{algorithm}</option>
+        {#each pathfindingMazes as maze}
+          <option value={maze}>{maze}</option>
         {/each}
       </select>
     </div>

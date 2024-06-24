@@ -1,6 +1,6 @@
 <script lang="ts">
   import 'iconify-icon';
-  import { ParticlesSettings } from '$lib/particles';
+  import { ParticlesSettings } from '$lib/components/particles';
   import { clickOutside } from '$lib/utils';
   import { isMenuOpened } from '$lib/store';
 

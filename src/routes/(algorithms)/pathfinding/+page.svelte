@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PathfindingVisualizer } from '$lib/pathfinding';
+  import { PathfindingVisualizer } from '$lib/components/pathfinding';
 </script>
 
 <svelte:head>

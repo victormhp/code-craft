@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Particles } from '$lib/particles';
-  import { NavHome } from '$lib/ui';
+  import { Particles } from '$lib/components/particles';
+  import { NavHome } from '$lib/components';
   import { isMenuOpened } from '$lib/store';
   import { fade } from 'svelte/transition';
 
