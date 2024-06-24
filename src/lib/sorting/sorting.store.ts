@@ -21,8 +21,14 @@ export const sortingAlgorithmsRecord = [
 
 // Sorting Settings Stores
 export const sortingSize = writable(15);
-export const sortingDelay = writable(50);
+
+export const sortingDelay = writable(100);
+
 export const sortingShowValues = writable(false);
+
+type SortingOrder = 'Random' | 'Reverse';
+export const sortingOrder = writable<SortingOrder>('Random');
+
 export const sortingAlgorithm = writable<SortingFunction>(bubbleSort);
 
 // Sorting State Store

@@ -2,6 +2,7 @@
   import 'iconify-icon';
   import {
     sortingSize,
+    sortingOrder,
     sortingDelay,
     sortingAlgorithm,
     sortingState,
@@ -18,9 +19,16 @@
   let rectsContainerWidth: number;
   let rectMinHeight = 20;
   let rectMaxHeight = 450;
+  let initialHeights: number[] = [];
+
+  $: {
+    initialHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
+    if ($sortingOrder === 'Reverse') {
+      initialHeights.sort((a, b) => b - a);
+    }
+  }
 
   $: rectWidth = rectsContainerWidth / $sortingSize;
-  $: initialHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
   $: ({ moves, states } = $sortingAlgorithm([...initialHeights]));
 
   $: $sortingState.total = states.length;

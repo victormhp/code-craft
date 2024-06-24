@@ -5,25 +5,20 @@
     sortingAlgorithm,
     sortingShowValues,
     sortingState,
+    sortingOrder,
     sortingAlgorithmsRecord
   } from './sorting.store';
-
-  const sortingColors = [
-    { color: 'bg-red-400', status: 'Moving' },
-    { color: 'bg-green-400', status: 'Sorted' },
-    { color: 'bg-zinc-400', status: 'Unsorted' }
-  ];
 </script>
 
 <article class="space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
   <div class="space-y-4">
     <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Sorting Settings</h2>
-    <div class="flex w-full items-center justify-between gap-2">
-      <label for="algorithm">Algorithm</label>
+    <div class="flex grow flex-col items-start gap-1">
+      <label class="pl-1 text-sm text-zinc-500" for="sorting">Algorithm</label>
       <select
-        id="algorithm"
+        id="sorting"
         bind:value={$sortingAlgorithm}
-        class="flex-grow rounded border border-zinc-200 bg-transparent p-2"
+        class="w-full rounded border border-zinc-200 bg-transparent p-2"
         disabled={$sortingState.current > 0}
       >
         {#each sortingAlgorithmsRecord as { algorithmName, algorithmFunction }}
@@ -31,8 +26,20 @@
         {/each}
       </select>
     </div>
-    <div class="space-y-1">
-      <label for="delay">Delay</label>
+    <div class="flex grow flex-col items-start gap-1">
+      <label class="pl-1 text-sm text-zinc-500" for="order">Order</label>
+      <select
+        id="order"
+        bind:value={$sortingOrder}
+        class="w-full rounded border border-zinc-200 bg-transparent p-2"
+        disabled={$sortingState.current > 0}
+      >
+        <option value="Random">Random</option>
+        <option value="Reverse">Reverse</option>
+      </select>
+    </div>
+    <div class="space-y-2">
+      <label for="delay">Delay: {$sortingDelay}ms</label>
       <div class="flex gap-2">
         <input
           id="delay"
@@ -40,45 +47,42 @@
           name="delay"
           type="range"
           bind:value={$sortingDelay}
-          min="1"
-          max="1024"
+          min="0"
+          max="1000"
+          step="100"
           disabled={$sortingState.current > 0}
         />
-        <p class="rounded border border-zinc-300 px-2 py-1 shadow-sm">
-          {$sortingDelay} ms
-        </p>
       </div>
     </div>
-    <div class="space-y-1">
-      <label for="size">Size</label>
+    <div class="space-y-2">
+      <label for="rect-size">Size: {$sortingSize}</label>
       <div class="flex gap-2">
         <input
-          id="size"
+          id="rect-size"
           class="grow"
-          name="size"
+          name="rect-size"
           type="range"
           bind:value={$sortingSize}
           min="10"
           max="64"
           disabled={$sortingState.current > 0}
         />
-        <p class="rounded border border-zinc-300 px-2 py-1 shadow-sm">{$sortingSize}</p>
       </div>
     </div>
   </div>
   <div class="space-y-4">
-    <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Visualization Settings</h2>
-    <div class="flex flex-col gap-4">
-      {#each sortingColors as { color, status }}
-        <div class="flex items-center gap-2">
-          <div class="flex h-4 w-4 items-center justify-center rounded-full border border-zinc-400">
-            <div class={`h-2 w-2 rounded-full ${color}`} />
-          </div>
-          <p class="text-zinc-400">{status}</p>
-        </div>
-      {/each}
-    </div>
-    <div class="flex gap-2 pt-4">
+    <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Visual Settings</h2>
+    <!-- <div class="flex gap-4"> -->
+    <!--   <label class="whitespace-nowrap" for="rect-color">Rect Color</label> -->
+    <!--   <input -->
+    <!--     id="rect-color" -->
+    <!--     class="grow" -->
+    <!--     name="rect-color" -->
+    <!--     type="color" -->
+    <!--     disabled={$sortingState.current > 0} -->
+    <!--   /> -->
+    <!-- </div> -->
+    <div class="flex gap-2">
       <input
         id="rect-heights"
         name="rect-heights"
