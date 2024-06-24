@@ -1,6 +1,48 @@
 import { derived, writable } from 'svelte/store';
 import { bubbleSort, insertionSort, mergeSortStates, selectionSort } from './sorting.utils';
 
+// Sorting Settings Stores
+export const sortingSize = writable(15);
+
+export const sortingDelay = writable(100);
+
+export const sortingShowValues = writable(false);
+
+type SortingOrder = 'Random' | 'Reverse';
+export const sortingOrder = writable<SortingOrder>('Random');
+
+export const sortingAlgorithm = writable<SortingFunction>(bubbleSort);
+
+// Sorting Rect Colors
+interface SortingRectColors {
+  rect: string;
+  moving: string;
+}
+
+function createSortingColor(initialValue: SortingRectColors) {
+  const sortingRectColor = writable(initialValue);
+
+  function resetRect() {
+    sortingRectColor.update((state) => {
+      return { ...state, rect: '#27272a' };
+    });
+  }
+
+  function resetMoving() {
+    sortingRectColor.update((state) => {
+      return { ...state, moving: '#ef4444' };
+    });
+  }
+
+  return {
+    ...sortingRectColor,
+    resetRect,
+    resetMoving
+  };
+}
+
+export const sortingRectColor = createSortingColor({ rect: '#27272a', moving: '#ef4444' });
+
 // Sorting algorithm function types
 enum SortingAlgorithms {
   BubbleSort = 'Bubble Sort',
@@ -18,20 +60,6 @@ export const sortingAlgorithmsRecord = [
   { algorithmName: SortingAlgorithms.SelectionSort, algorithmFunction: selectionSort },
   { algorithmName: SortingAlgorithms.MergeSort, algorithmFunction: mergeSortStates }
 ];
-
-// Sorting Settings Stores
-export const sortingSize = writable(15);
-
-export const sortingDelay = writable(100);
-
-export const sortingRectColor = writable('#27272a');
-
-export const sortingShowValues = writable(false);
-
-type SortingOrder = 'Random' | 'Reverse';
-export const sortingOrder = writable<SortingOrder>('Random');
-
-export const sortingAlgorithm = writable<SortingFunction>(bubbleSort);
 
 // Sorting State Store
 interface SortingStateStore {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'iconify-icon';
   import {
     sortingSize,
     sortingDelay,
@@ -73,18 +74,45 @@
   </div>
   <div class="space-y-5">
     <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Visual Settings</h2>
-    <div class="flex gap-4">
-      <label class="whitespace-nowrap" for="rect-color">Rect Color</label>
-      <input
-        id="rect-color"
-        bind:value={$sortingRectColor}
-        class="grow"
-        name="rect-color"
-        type="color"
-        disabled={$sortingState.current > 0}
-      />
+    <div>
+      <label class="whitespace-nowrap pl-1 text-sm text-zinc-500" for="rect-color">Rect Color</label
+      >
+      <div class="flex items-center gap-2 rounded border border-zinc-200 bg-transparent p-2">
+        <input
+          id="rect-color"
+          bind:value={$sortingRectColor.rect}
+          class="h-7 w-20 rounded-lg border-none shadow-sm"
+          name="rect-color"
+          type="color"
+          disabled={$sortingState.current > 0}
+        />
+        <p>{$sortingRectColor.rect}</p>
+        <button on:click={sortingRectColor.resetRect} class="ml-auto" type="button">
+          <iconify-icon icon="radix-icons:reset" width="20" height="20" style="color: #27272a"
+          ></iconify-icon>
+        </button>
+      </div>
     </div>
-
+    <div>
+      <label class="whitespace-nowrap pl-1 text-sm text-zinc-500" for="rect-moving-color"
+        >Moving Rect Color</label
+      >
+      <div class="flex items-center gap-2 rounded border border-zinc-200 bg-transparent p-2">
+        <input
+          id="rect-moving-color"
+          bind:value={$sortingRectColor.moving}
+          class="h-7 w-20 rounded-lg border-none shadow-sm"
+          name="rect-moving-color"
+          type="color"
+          disabled={$sortingState.current > 0}
+        />
+        <p>{$sortingRectColor.moving}</p>
+        <button on:click={sortingRectColor.resetMoving} class="ml-auto" type="button">
+          <iconify-icon icon="radix-icons:reset" width="20" height="20" style="color: #27272a"
+          ></iconify-icon>
+        </button>
+      </div>
+    </div>
     <div class="flex gap-2">
       <input
         id="rect-heights"
