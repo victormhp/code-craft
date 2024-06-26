@@ -3,50 +3,49 @@
   import {
     sortingOrder,
     sortingAlgorithm,
-    sortingState,
+    sortingProgress,
     canStep,
     canStepBack
   } from './sorting.store';
-  import { generateRandomArray } from './sorting.utils';
+  import { generateRandomArray } from '$lib/utils';
   import { Progress } from '$lib/components/ui';
   import Rect from './rect.svelte';
 
   export let size = 15;
   export let delay = 100;
-  export let showValues = false;
+  export let isHeightVisible = false;
 
   let frame: number;
   let timeout: number;
-  let rectWidth: number;
-  let rectsContainerWidth: number;
-  let rectsContainerHeight: number;
+  let rectsContainerWidth = 0;
+  let rectsContainerHeight = 0;
+  let rectHeights: number[] = [];
+
   let rectMinHeight = 20;
-  let rectMaxHeight = 450;
-  let initialHeights: number[] = [];
+  $: rectMaxHeight = rectsContainerHeight - 100;
+  $: rectWidth = rectsContainerWidth / size;
 
   $: {
-    initialHeights = generateRandomArray(size, rectMinHeight, rectMaxHeight);
+    rectHeights = generateRandomArray(size, rectMinHeight, rectMaxHeight);
     if ($sortingOrder === 'Reverse') {
-      initialHeights.sort((a, b) => b - a);
+      rectHeights.sort((a, b) => b - a);
     }
   }
 
-  $: rectWidth = rectsContainerWidth / size;
-  $: ({ moves, states } = $sortingAlgorithm([...initialHeights]));
-
-  $: $sortingState.total = states.length;
-  $: $sortingState.move = moves[$sortingState.current];
-  $: rectHeights = states[$sortingState.current];
+  $: ({ rectValues, rectStatuses } = $sortingAlgorithm([...rectHeights]));
+  $: $sortingProgress.total = rectValues.length;
+  $: currentState = rectValues[$sortingProgress.current];
+  $: currentStatus = rectStatuses[$sortingProgress.current];
 
   function animate() {
-    if ($sortingState.isPlaying && !$canStep) {
-      $sortingState.isPlaying = false;
+    if ($sortingProgress.isPlaying && !$canStep) {
+      $sortingProgress.isPlaying = false;
     }
 
-    if ($sortingState.isPlaying && $canStep) {
+    if ($sortingProgress.isPlaying && $canStep) {
       timeout = setTimeout(() => {
         frame = requestAnimationFrame(animate);
-        sortingState.step();
+        sortingProgress.step();
       }, delay);
 
       return () => {
@@ -57,12 +56,12 @@
   }
 
   function play() {
-    if ($sortingState.isPlaying) {
-      $sortingState.isPlaying = false;
+    if ($sortingProgress.isPlaying) {
+      $sortingProgress.isPlaying = false;
       clearTimeout(timeout);
       cancelAnimationFrame(frame);
     } else {
-      $sortingState.isPlaying = true;
+      $sortingProgress.isPlaying = true;
       animate();
     }
   }
@@ -73,46 +72,47 @@
         play();
         break;
       case 'ArrowLeft':
-        if ($sortingState.current > 0 && canStepBack) {
-          sortingState.stepBack();
+        if ($sortingProgress.current > 0 && canStepBack) {
+          sortingProgress.stepBack();
         }
         break;
       case 'ArrowRight':
-        if ($sortingState.current + 1 < $sortingState.total && canStep) {
-          sortingState.step();
+        if ($sortingProgress.current + 1 < $sortingProgress.total && canStep) {
+          sortingProgress.step();
         }
+        break;
+      default:
         break;
     }
   }
 
   function randomize() {
-    sortingState.reset();
-    $sortingState.isPlaying = false;
-    initialHeights = generateRandomArray(size, rectMinHeight, rectMaxHeight);
+    sortingProgress.reset();
+    $sortingProgress.isPlaying = false;
+    rectHeights = generateRandomArray(size, rectMinHeight, rectMaxHeight);
   }
 
   function restart() {
     cancelAnimationFrame(frame);
-    sortingState.reset();
-    $sortingState.isPlaying = false;
+    sortingProgress.reset();
+    $sortingProgress.isPlaying = false;
   }
 </script>
 
 <svelte:window on:keydown={keysControls} />
 
-<div class="flex flex-col gap-4">
+<div class="grid grid-rows-[1fr,auto] gap-4">
   <div
     bind:clientWidth={rectsContainerWidth}
     bind:clientHeight={rectsContainerHeight}
-    class="mb-4 flex w-full grow items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
-    style="height: {rectMaxHeight + 100}px"
+    class="mb-4 flex items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
   >
-    {#each rectHeights as rectHeight, i}
-      <Rect id={i} width={rectWidth} height={rectHeight} {showValues} />
+    {#each currentState as rectHeight, i}
+      <Rect width={rectWidth} height={rectHeight} status={currentStatus[i]} {isHeightVisible} />
     {/each}
   </div>
-  <div class="mt-auto space-y-4">
-    <Progress max={$sortingState.total - 1} value={$sortingState.current} />
+  <div class="space-y-4">
+    <Progress max={$sortingProgress.total - 1} value={$sortingProgress.current} />
     <div
       class="flex justify-between gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
     >
@@ -120,7 +120,7 @@
         class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
         type="button"
         on:click={randomize}
-        disabled={$sortingState.isPlaying || ($canStep && $canStepBack)}
+        disabled={$sortingProgress.isPlaying || ($canStep && $canStepBack)}
       >
         <iconify-icon icon="mingcute:shuffle-2-line" width="20" height="20" style="color: #27272a"
         ></iconify-icon>
@@ -129,8 +129,8 @@
         <button
           class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
           type="button"
-          on:click={sortingState.stepBack}
-          disabled={$sortingState.isPlaying || !$canStepBack}
+          on:click={sortingProgress.stepBack}
+          disabled={$sortingProgress.isPlaying || !$canStepBack}
         >
           <iconify-icon
             icon="mingcute:skip-previous-fill"
@@ -147,7 +147,7 @@
           disabled={!$canStep}
         >
           <iconify-icon
-            icon={$sortingState.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
+            icon={$sortingProgress.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
             width="20"
             height="20"
             style="color: #27272a"
@@ -156,8 +156,8 @@
         <button
           class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
           type="button"
-          on:click={sortingState.step}
-          disabled={$sortingState.isPlaying || !$canStep}
+          on:click={sortingProgress.step}
+          disabled={$sortingProgress.isPlaying || !$canStep}
         >
           <iconify-icon
             icon="mingcute:skip-forward-fill"
@@ -172,7 +172,7 @@
         class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
         type="button"
         on:click={restart}
-        disabled={$sortingState.isPlaying || $sortingState.current < 1}
+        disabled={$sortingProgress.isPlaying || $sortingProgress.current < 1}
       >
         <iconify-icon icon="mingcute:refresh-3-line" width="20" height="20" style="color: #27272a"
         ></iconify-icon>

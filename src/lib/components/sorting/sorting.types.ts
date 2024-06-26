@@ -4,35 +4,34 @@ import { bubbleSort, insertionSort, mergeSort, selectionSort } from './sorting.u
 export type SortingOrder = 'Random' | 'Reverse';
 
 // Sorting Rect Colors
-export interface SortingRectColors {
-  rect: string;
+export interface SortingColors {
+  unordered: string;
+  ordered: string;
   moving: string;
 }
 
+export type RectStatus = keyof SortingColors;
+
 // Sorting algorithm function types
-export enum SortingAlgorithms {
-  BubbleSort = 'Bubble Sort',
-  InsertionSort = 'Insertion Sort',
-  SelectionSort = 'Selection Sort',
-  MergeSort = 'Merge Sort'
-}
+export interface SortingHistory {
+  rectValues: number[][];
+  rectStatuses: RectStatus[][];
+};
 
-export type SortingSteps = Record<'moves' | 'states', number[][]>;
+export type SortingAlgorithm = 'Bubble Sort' | 'Insertion Sort' | 'Selection Sort' | 'Merge Sort';
 
-export type SortingFunction = (arr: number[]) => SortingSteps;
+export type SortingFunction = (nums: number[]) => SortingHistory;
 
-export const sortingAlgorithmsRecord = [
-  { algorithmName: SortingAlgorithms.BubbleSort, algorithmFunction: bubbleSort },
-  { algorithmName: SortingAlgorithms.InsertionSort, algorithmFunction: insertionSort },
-  { algorithmName: SortingAlgorithms.SelectionSort, algorithmFunction: selectionSort },
-  { algorithmName: SortingAlgorithms.MergeSort, algorithmFunction: mergeSort }
+export const sortingAlgorithms = [
+  { algorithmName: 'Bubble Sort', algorithmFunction: bubbleSort },
+  { algorithmName: 'Insertion Sort', algorithmFunction: insertionSort },
+  { algorithmName: 'Selection Sort', algorithmFunction: selectionSort },
+  { algorithmName: 'Merge Sort', algorithmFunction: mergeSort }
 ];
 
-// Sorting State Store
-export interface SortingState {
-  algorithm: SortingAlgorithms;
+// Sorting Progress Store
+export interface SortingProgress {
   isPlaying: boolean;
-  move: number[];
   current: number;
   total: number;
 }

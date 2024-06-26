@@ -1,107 +1,143 @@
-import type { SortingSteps, SortingFunction } from './sorting.types';
+import { rangeArray } from '$lib/utils';
+import type { SortingHistory, RectStatus } from './sorting.types';
 
-export function generateRandomArray(length: number, start: number, end: number): number[] {
-  const uniqueNumbers: Set<number> = new Set();
-
-  while (uniqueNumbers.size < length) {
-    const n = Math.floor(Math.random() * (start - end) + end);
-    uniqueNumbers.add(n);
-  }
-
-  return Array.from(uniqueNumbers);
+function swap<T>(arr: T[], a: number, b: number) {
+  const temp = arr[a];
+  arr[a] = arr[b];
+  arr[b] = temp;
 }
 
-function range(start: number, end: number) {
-  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+function recordStep(history: SortingHistory, nums: number[], statuses: RectStatus[]) {
+  history.rectValues.push([...nums]);
+  history.rectStatuses.push([...statuses]);
 }
 
-export const bubbleSort: SortingFunction = (arr: number[]) => {
-  const values: SortingSteps = { moves: [[]], states: [[...arr]] };
+export function bubbleSort(nums: number[]): SortingHistory {
+  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
+  let swapped: boolean;
 
-  for (let i = 0; i < arr.length - 1; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  recordStep(history, nums, statuses);
 
-        values.moves.push([j, j + 1]);
-        values.states.push([...arr]);
+  for (let i = 0; i < nums.length - 1; i++) {
+    swapped = false;
+    for (let j = 0; j < nums.length - i - 1; j++) {
+      const newStatuses = [...statuses];
+      if (nums[j] > nums[j + 1]) {
+        swap(nums, j, j + 1);
+        newStatuses[j] = 'moving';
+        newStatuses[j + 1] = 'moving';
+
+        recordStep(history, nums, newStatuses);
+
+        swapped = true;
       } else {
-        values.moves.push([j, j + 1]);
-        values.states.push([...arr]);
-      }
+        newStatuses[j] = 'moving';
+        newStatuses[j + 1] = 'moving';
 
-      if (j === arr.length - i - 2) {
-        values.moves.push([arr.length - i - 1, arr.length - i - 1]);
-        values.states.push([...arr]);
+        recordStep(history, nums, newStatuses);
       }
     }
+
+    if (!swapped) break;
   }
 
-  values.moves.push([0, 0]);
-  values.states.push([...arr]);
+  recordStep(history, nums, statuses);
+  return history;
+}
 
-  return values;
-};
+export function insertionSort(nums: number[]): SortingHistory {
+  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
 
-export const insertionSort: SortingFunction = (arr: number[]) => {
-  const values: SortingSteps = { moves: [[]], states: [[...arr]] };
+  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  recordStep(history, nums, statuses);
 
-  for (let i = 1; i < arr.length; i++) {
-    const key = arr[i];
+  for (let i = 1; i < nums.length; i++) {
+    const key = nums[i];
     let j = i - 1;
-    while (j >= 0 && key < arr[j]) {
-      arr[j + 1] = arr[j];
-      arr[j] = key;
-      values.states.push([...arr]);
-      values.moves.push([j, j + 1]);
+
+    while (j >= 0 && key < nums[j]) {
+      nums[j + 1] = nums[j];
+      nums[j] = key;
+
+      const newStatuses = [...statuses];
+      newStatuses[j] = 'moving';
+      newStatuses[j + 1] = 'moving';
+
+      recordStep(history, nums, newStatuses);
+
       j--;
     }
-    // arr[j + 1] = key;
   }
 
-  arr.forEach((_, i) => values.moves.push([i, i]));
+  recordStep(history, nums, statuses);
+  return history;
+}
 
-  return values;
-};
+export function selectionSort(nums: number[]): SortingHistory {
+  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
 
-export const selectionSort: SortingFunction = (arr: number[]) => {
-  const values: SortingSteps = { moves: [[]], states: [[...arr]] };
+  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  recordStep(history, nums, statuses);
 
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < nums.length; i++) {
     let minIndex = i;
 
-    for (let j = i + 1; j < arr.length; j++) {
-      values.moves.push([j, minIndex]);
-      values.states.push([...arr]);
-      if (arr[minIndex] > arr[j]) {
+    for (let j = i + 1; j < nums.length; j++) {
+      const newStatuses = [...statuses];
+      newStatuses[minIndex] = 'moving';
+      newStatuses[j] = 'moving';
+      recordStep(history, nums, newStatuses);
+
+      if (nums[minIndex] > nums[j]) {
         minIndex = j;
       }
     }
 
-    values.moves.push([i, minIndex]);
-    [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    values.states.push([...arr]);
+    swap(nums, i, minIndex);
+
+    const newStatuses = [...statuses];
+    newStatuses[i] = 'moving';
+    newStatuses[minIndex] = 'moving';
+    recordStep(history, nums, newStatuses);
   }
 
-  return values;
-};
+  recordStep(history, nums, statuses);
+  return history;
+}
 
-export const mergeSort: SortingFunction = (arr: number[]) => {
-  const values: SortingSteps = { moves: [[]], states: [[...arr]] };
-  mergeS(arr, 0, arr.length - 1, values);
-  return values;
-};
+export function mergeSort(nums: number[]): SortingHistory {
+  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
 
-function mergeS(arr: number[], l: number, r: number, values: SortingSteps) {
+  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  recordStep(history, nums, statuses);
+
+  mergeS(nums, 0, nums.length - 1, history, statuses);
+
+  recordStep(history, nums, statuses);
+  return history;
+}
+
+function mergeS(
+  nums: number[],
+  l: number,
+  r: number,
+  history: SortingHistory,
+  statuses: RectStatus[]
+) {
   if (l >= r) return;
 
   const mid = l + Math.floor((r - l) / 2);
-  mergeS(arr, l, mid, values);
-  mergeS(arr, mid + 1, r, values);
-  merge(arr, l, mid, r);
+  mergeS(nums, l, mid, history, statuses);
+  mergeS(nums, mid + 1, r, history, statuses);
+  merge(nums, l, mid, r);
 
-  values.moves.push(range(l, r));
-  values.states.push(arr.slice());
+  const newStatuses = [...statuses];
+  for (const n of rangeArray(l, r)) {
+    newStatuses[n] = 'moving';
+  }
+
+  recordStep(history, nums, newStatuses);
 }
 
 function merge(arr: number[], l: number, m: number, r: number) {

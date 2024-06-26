@@ -1,14 +1,14 @@
 <script lang="ts">
   import 'iconify-icon';
-  import { sortingOrder, sortingAlgorithm, sortingRectColor, sortingState } from './sorting.store';
-  import { sortingAlgorithmsRecord } from './sorting.types';
+  import { sortingOrder, sortingAlgorithm, sortingColors, sortingProgress } from './sorting.store';
+  import { sortingAlgorithms } from './sorting.types';
 
   export let size = 15;
   export let delay = 100;
-  export let showValues = false;
+  export let isHeightVisible = false;
 </script>
 
-<article class="space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
+<article class="h-full w-full space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
   <div class="space-y-5">
     <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Sorting Settings</h2>
     <div class="flex grow flex-col items-start gap-1">
@@ -17,9 +17,9 @@
         id="sorting"
         bind:value={$sortingAlgorithm}
         class="w-full rounded border border-zinc-200 bg-transparent p-2"
-        disabled={$sortingState.current > 0}
+        disabled={$sortingProgress.current > 0}
       >
-        {#each sortingAlgorithmsRecord as { algorithmName, algorithmFunction }}
+        {#each sortingAlgorithms as { algorithmName, algorithmFunction }}
           <option value={algorithmFunction}>{algorithmName}</option>
         {/each}
       </select>
@@ -30,7 +30,7 @@
         id="order"
         bind:value={$sortingOrder}
         class="w-full rounded border border-zinc-200 bg-transparent p-2"
-        disabled={$sortingState.current > 0}
+        disabled={$sortingProgress.current > 0}
       >
         <option value="Random">Random</option>
         <option value="Reverse">Reverse</option>
@@ -48,7 +48,7 @@
           min="0"
           max="1000"
           step="100"
-          disabled={$sortingState.current > 0}
+          disabled={$sortingProgress.current > 0}
         />
       </div>
     </div>
@@ -63,7 +63,7 @@
           bind:value={size}
           min="10"
           max="64"
-          disabled={$sortingState.current > 0}
+          disabled={$sortingProgress.current > 0}
         />
       </div>
     </div>
@@ -76,14 +76,19 @@
       <div class="flex items-center gap-2 rounded border border-zinc-200 bg-transparent p-2">
         <input
           id="rect-color"
-          bind:value={$sortingRectColor.rect}
+          bind:value={$sortingColors.unordered}
           class="h-7 w-20 rounded-lg border-none shadow-sm"
           name="rect-color"
           type="color"
-          disabled={$sortingState.current > 0}
+          disabled={$sortingProgress.current > 0}
         />
-        <p>{$sortingRectColor.rect}</p>
-        <button on:click={sortingRectColor.resetRect} class="ml-auto" type="button">
+        <p>{$sortingColors.unordered}</p>
+        <button
+          on:click={sortingColors.resetUnordered}
+          class="ml-auto"
+          type="button"
+          disabled={$sortingProgress.current > 0}
+        >
           <iconify-icon icon="radix-icons:reset" width="20" height="20" style="color: #27272a"
           ></iconify-icon>
         </button>
@@ -96,14 +101,19 @@
       <div class="flex items-center gap-2 rounded border border-zinc-200 bg-transparent p-2">
         <input
           id="rect-moving-color"
-          bind:value={$sortingRectColor.moving}
+          bind:value={$sortingColors.moving}
           class="h-7 w-20 rounded-lg border-none shadow-sm"
           name="rect-moving-color"
           type="color"
-          disabled={$sortingState.current > 0}
+          disabled={$sortingProgress.current > 0}
         />
-        <p>{$sortingRectColor.moving}</p>
-        <button on:click={sortingRectColor.resetMoving} class="ml-auto" type="button">
+        <p>{$sortingColors.moving}</p>
+        <button
+          on:click={sortingColors.resetMoving}
+          class="ml-auto"
+          type="button"
+          disabled={$sortingProgress.current > 0}
+        >
           <iconify-icon icon="radix-icons:reset" width="20" height="20" style="color: #27272a"
           ></iconify-icon>
         </button>
@@ -114,8 +124,8 @@
         id="rect-heights"
         name="rect-heights"
         type="checkbox"
-        bind:checked={showValues}
-        disabled={$sortingState.current > 0}
+        bind:checked={isHeightVisible}
+        disabled={$sortingProgress.current > 0}
       />
       <p>Show rect heights</p>
     </div>

@@ -1,26 +1,21 @@
 <script lang="ts">
-  import {
-    sortingRectColor,
-    sortingState,
-    canStep,
-    canStepBack,
-  } from './sorting.store';
+  import { sortingColors } from './sorting.store';
+  import type { RectStatus } from './sorting.types';
 
-  export let id = 0;
   export let width = 0;
   export let height = 0;
-  export let showValues = false;
+  export let status: RectStatus = 'unordered';
+  export let isHeightVisible = false;
 
-  $: textSize = width > 50 ? "14px" : "10px";
-  $: isMoving = $sortingState.move.includes(id) && $canStep && $canStepBack;
+  $: textSize = width > 50 ? '14px' : '10px';
 </script>
 
 <div
-  class="relative flex items-center justify-center rounded-t-md border border-white"
-  style="width: {width}px; height: {height}px; background-color: {isMoving ? $sortingRectColor.moving : $sortingRectColor.rect};"
+  class="relative flex origin-bottom items-center justify-center rounded-t-md border border-zinc-50"
+  style="width: {width}px; height: {height}px; background-color: {$sortingColors[status]};"
 >
-  {#if showValues}
-    <p class="vertical-lr text-gray-100" style="font-size: {textSize}">{height}</p>
+  {#if isHeightVisible}
+    <p class="vertical-lr text-zinc-50" style="font-size: {textSize}">{height}</p>
   {/if}
 </div>
 
