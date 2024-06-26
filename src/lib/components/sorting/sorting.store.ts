@@ -8,6 +8,10 @@ import type {
 } from './sorting.types';
 
 // Sorting Settings Stores
+export const sortingSize = writable(15);
+
+export const sortingDelay = writable(100);
+
 export const sortingOrder = writable<SortingOrder>('Random');
 
 export const sortingAlgorithm = writable<SortingFunction>(bubbleSort);

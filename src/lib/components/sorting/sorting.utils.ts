@@ -25,16 +25,14 @@ export function bubbleSort(nums: number[]): SortingHistory {
       const newStatuses = [...statuses];
       if (nums[j] > nums[j + 1]) {
         swap(nums, j, j + 1);
+        swapped = true;
+
         newStatuses[j] = 'moving';
         newStatuses[j + 1] = 'moving';
-
         recordStep(history, nums, newStatuses);
-
-        swapped = true;
       } else {
         newStatuses[j] = 'moving';
         newStatuses[j + 1] = 'moving';
-
         recordStep(history, nums, newStatuses);
       }
     }

@@ -2,6 +2,8 @@
   import 'iconify-icon';
   import {
     sortingOrder,
+    sortingSize,
+    sortingDelay,
     sortingAlgorithm,
     sortingProgress,
     canStep,
@@ -11,10 +13,6 @@
   import { Progress } from '$lib/components/ui';
   import Rect from './rect.svelte';
 
-  export let size = 15;
-  export let delay = 100;
-  export let isHeightVisible = false;
-
   let frame: number;
   let timeout: number;
   let rectsContainerWidth = 0;
@@ -23,10 +21,10 @@
 
   let rectMinHeight = 20;
   $: rectMaxHeight = rectsContainerHeight - 100;
-  $: rectWidth = rectsContainerWidth / size;
+  $: rectWidth = rectsContainerWidth / $sortingSize;
 
   $: {
-    rectHeights = generateRandomArray(size, rectMinHeight, rectMaxHeight);
+    rectHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
     if ($sortingOrder === 'Reverse') {
       rectHeights.sort((a, b) => b - a);
     }
@@ -46,7 +44,7 @@
       timeout = setTimeout(() => {
         frame = requestAnimationFrame(animate);
         sortingProgress.step();
-      }, delay);
+      }, $sortingDelay);
 
       return () => {
         clearTimeout(timeout);
@@ -89,7 +87,7 @@
   function randomize() {
     sortingProgress.reset();
     $sortingProgress.isPlaying = false;
-    rectHeights = generateRandomArray(size, rectMinHeight, rectMaxHeight);
+    rectHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
   }
 
   function restart() {
@@ -108,7 +106,7 @@
     class="mb-4 flex items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
   >
     {#each currentState as rectHeight, i}
-      <Rect width={rectWidth} height={rectHeight} status={currentStatus[i]} {isHeightVisible} />
+      <Rect width={rectWidth} height={rectHeight} status={currentStatus[i]} />
     {/each}
   </div>
   <div class="space-y-4">

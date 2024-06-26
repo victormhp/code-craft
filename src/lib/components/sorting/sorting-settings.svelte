@@ -1,11 +1,14 @@
 <script lang="ts">
   import 'iconify-icon';
-  import { sortingOrder, sortingAlgorithm, sortingColors, sortingProgress } from './sorting.store';
+  import {
+    sortingSize,
+    sortingDelay,
+    sortingOrder,
+    sortingAlgorithm,
+    sortingColors,
+    sortingProgress
+  } from './sorting.store';
   import { sortingAlgorithms } from './sorting.types';
-
-  export let size = 15;
-  export let delay = 100;
-  export let isHeightVisible = false;
 </script>
 
 <article class="h-full w-full space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
@@ -37,14 +40,14 @@
       </select>
     </div>
     <div class="space-y-2">
-      <label for="delay">Delay: {delay}ms</label>
+      <label for="delay">Delay: {$sortingDelay}ms</label>
       <div class="flex gap-2">
         <input
           id="delay"
           class="grow"
           name="delay"
           type="range"
-          bind:value={delay}
+          bind:value={$sortingDelay}
           min="0"
           max="1000"
           step="100"
@@ -53,14 +56,14 @@
       </div>
     </div>
     <div class="space-y-2">
-      <label for="rect-size">Size: {size}</label>
+      <label for="rect-size">Size: {$sortingSize}</label>
       <div class="flex gap-2">
         <input
           id="rect-size"
           class="grow"
           name="rect-size"
           type="range"
-          bind:value={size}
+          bind:value={$sortingSize}
           min="10"
           max="64"
           disabled={$sortingProgress.current > 0}
@@ -118,16 +121,6 @@
           ></iconify-icon>
         </button>
       </div>
-    </div>
-    <div class="flex gap-2">
-      <input
-        id="rect-heights"
-        name="rect-heights"
-        type="checkbox"
-        bind:checked={isHeightVisible}
-        disabled={$sortingProgress.current > 0}
-      />
-      <p>Show rect heights</p>
     </div>
   </div>
 </article>
