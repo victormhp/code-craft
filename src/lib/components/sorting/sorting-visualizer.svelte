@@ -5,6 +5,7 @@
     sortingSize,
     sortingDelay,
     sortingAlgorithm,
+    sortingIsPlaying,
     sortingProgress,
     canStep,
     canStepBack
@@ -36,11 +37,11 @@
   $: currentStatus = rectStatuses[$sortingProgress.current];
 
   function animate() {
-    if ($sortingProgress.isPlaying && !$canStep) {
-      $sortingProgress.isPlaying = false;
+    if ($sortingIsPlaying && !$canStep) {
+      $sortingIsPlaying = false;
     }
 
-    if ($sortingProgress.isPlaying && $canStep) {
+    if ($sortingIsPlaying && $canStep) {
       timeout = setTimeout(() => {
         frame = requestAnimationFrame(animate);
         sortingProgress.step();
@@ -54,12 +55,12 @@
   }
 
   function play() {
-    if ($sortingProgress.isPlaying) {
-      $sortingProgress.isPlaying = false;
+    if ($sortingIsPlaying) {
+      $sortingIsPlaying = false;
       clearTimeout(timeout);
       cancelAnimationFrame(frame);
     } else {
-      $sortingProgress.isPlaying = true;
+      $sortingIsPlaying = true;
       animate();
     }
   }
@@ -86,14 +87,14 @@
 
   function randomize() {
     sortingProgress.reset();
-    $sortingProgress.isPlaying = false;
+    $sortingIsPlaying = false;
     rectHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
   }
 
   function restart() {
     cancelAnimationFrame(frame);
     sortingProgress.reset();
-    $sortingProgress.isPlaying = false;
+    $sortingIsPlaying = false;
   }
 </script>
 
@@ -118,7 +119,7 @@
         class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
         type="button"
         on:click={randomize}
-        disabled={$sortingProgress.isPlaying || ($canStep && $canStepBack)}
+        disabled={$sortingIsPlaying || ($canStep && $canStepBack)}
       >
         <iconify-icon icon="mingcute:shuffle-2-line" width="20" height="20" style="color: #27272a"
         ></iconify-icon>
@@ -128,7 +129,7 @@
           class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
           type="button"
           on:click={sortingProgress.stepBack}
-          disabled={$sortingProgress.isPlaying || !$canStepBack}
+          disabled={$sortingIsPlaying || !$canStepBack}
         >
           <iconify-icon
             icon="mingcute:skip-previous-fill"
@@ -145,7 +146,7 @@
           disabled={!$canStep}
         >
           <iconify-icon
-            icon={$sortingProgress.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
+            icon={$sortingIsPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
             width="20"
             height="20"
             style="color: #27272a"
@@ -155,7 +156,7 @@
           class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
           type="button"
           on:click={sortingProgress.step}
-          disabled={$sortingProgress.isPlaying || !$canStep}
+          disabled={$sortingIsPlaying || !$canStep}
         >
           <iconify-icon
             icon="mingcute:skip-forward-fill"
@@ -170,7 +171,7 @@
         class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
         type="button"
         on:click={restart}
-        disabled={$sortingProgress.isPlaying || $sortingProgress.current < 1}
+        disabled={$sortingIsPlaying || $sortingProgress.current < 1}
       >
         <iconify-icon icon="mingcute:refresh-3-line" width="20" height="20" style="color: #27272a"
         ></iconify-icon>

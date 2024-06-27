@@ -31,7 +31,6 @@ export const sortingAlgorithms = [
 
 // Sorting Progress Store
 export interface SortingProgress {
-  isPlaying: boolean;
   current: number;
   total: number;
 }

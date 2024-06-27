@@ -45,6 +45,9 @@ export const sortingColors = createSortingColors({
   moving: '#ef4444'
 });
 
+// Sorting animation playing
+export const sortingIsPlaying = writable(false);
+
 // Sorting Progress Store
 function createSortingProgress(initialValue: SortingProgress) {
   const sortingProgress = writable<SortingProgress>(initialValue);
@@ -76,14 +79,16 @@ function createSortingProgress(initialValue: SortingProgress) {
 }
 
 export const sortingProgress = createSortingProgress({
-  isPlaying: false,
   current: 0,
   total: 0
 });
 
 export const canStep = derived(
   sortingProgress,
-  ($sortingState) => $sortingState.current < $sortingState.total - 1
+  ($sortingProgress) => $sortingProgress.current < $sortingProgress.total - 1
 );
 
-export const canStepBack = derived(sortingProgress, ($sortingState) => $sortingState.current > 0);
+export const canStepBack = derived(
+  sortingProgress,
+  ($sortingProgress) => $sortingProgress.current > 0
+);
