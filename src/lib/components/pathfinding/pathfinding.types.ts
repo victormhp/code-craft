@@ -1,11 +1,19 @@
-export interface Grid {
-    nodes: GridNode[];
+// export type Grid = number[][];
+
+export interface NodeColors {
+    empty: string;
+    wall: string;
+    path: string;
+    start: string;
+    finish: string;
 }
 
-type GridNodeType = 'Empty' | 'Wall' | 'Start' | 'Finish' | 'Path';
+export type NodeState = keyof NodeColors;
 
 export interface GridNode {
-    xPos: number;
-    yPos: number;
-    nodeType: GridNodeType;
+    position: number[];
+    state: NodeState;
 }
+
+export type Grid = GridNode[];
+

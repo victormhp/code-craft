@@ -1,46 +1,35 @@
 <script lang="ts">
   import 'iconify-icon';
-  import Node from './node.svelte';
+  import type { Grid, GridNode } from './pathfinding.types';
   import { grid } from './pathfinding.store';
-  import type { GridNode } from './pathfinding.types';
+  import Node from './node.svelte';
 
   let mousePressed = false;
-  let gridWidth = 0;
-  let gridHeight = 0;
-  let nodeSize = 20;
-  let xValues: number[] = [];
-  let yValues: number[] = [];
-  let nodeStart = [2, 2];
+  let nodeSize = 22;
+  let gridWidth: number;
+  let gridHeight: number;
 
   $: gridRows = Math.floor(gridHeight / nodeSize);
   $: gridColumns = Math.floor(gridWidth / nodeSize);
-  $: nodeFinish = [gridColumns - 3, gridRows - 3];
 
-  // Adjust the node size to ensure the grid is filled without any gaps.
-  $: nodeWidth = gridWidth / gridColumns;
-  $: nodeHeight = gridHeight / gridRows;
+  $: startId = gridColumns * 2 + 2;
+  $: finishId = gridColumns * (gridRows - 2) - 3;
+
+  $: xValues = Array.from({ length: gridColumns }, (_, i) => i);
+  $: yValues = Array.from({ length: gridRows }, (_, i) => i);
 
   $: {
-    grid.clearBoard();
-
-    xValues = Array.from({ length: gridColumns }, (_, i) => i);
-    yValues = Array.from({ length: gridRows }, (_, i) => i);
-
-    for (const y of yValues) {
-      for (const x of xValues) {
-        const newNode: GridNode = { xPos: x, yPos: y, nodeType: 'Empty' };
-
-        if (x === nodeStart[0] && y === nodeStart[1]) {
-          newNode.nodeType = 'Start';
-        }
-
-        if (x === nodeFinish[0] && y === nodeFinish[1]) {
-          newNode.nodeType = 'Finish';
-        }
-
-        $grid.nodes.push(newNode);
+    const newGrid: Grid = [];
+    for (let y = 0; y < gridRows; y++) {
+      for (let x = 0; x < gridColumns; x++) {
+        const id = x + y * gridColumns;
+        const state = id === startId ? 'start' : id === finishId ? 'finish' : 'empty';
+        const node: GridNode = { position: [x, y], state };
+        newGrid.push(node);
       }
     }
+
+    $grid = newGrid;
   }
 </script>
 
@@ -49,21 +38,12 @@
   on:mouseup={() => (mousePressed = false)}
 />
 
-<div
-  bind:clientWidth={gridWidth}
-  bind:clientHeight={gridHeight}
-  class="w-full border-l border-t border-l-zinc-200 border-t-zinc-200"
->
-  {#each yValues as y}
-    <div class="flex grow">
-      {#each xValues as x}
-        <Node
-          gridNode={$grid.nodes[x + y * gridColumns]}
-          bind:mousePressed
-          width={nodeWidth}
-          height={nodeHeight}
-        />
+<table bind:clientWidth={gridWidth} bind:clientHeight={gridHeight} class="border-collapse">
+  {#each yValues as y (y)}
+    <tr class="table-row">
+      {#each xValues as x (x)}
+        <Node id={x + y * gridColumns} bind:mousePressed width={nodeSize} height={nodeSize} />
       {/each}
-    </div>
+    </tr>
   {/each}
-</div>
+</table>

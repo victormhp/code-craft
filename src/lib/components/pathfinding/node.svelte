@@ -1,54 +1,76 @@
 <script lang="ts">
-  import type { GridNode } from './pathfinding.types';
+  import { draggable, dropzone } from '$lib/utils';
+  import { grid, gridStart, gridFinish } from './pathfinding.store';
 
-  export let gridNode: GridNode;
+  export let id: number;
   export let mousePressed = false;
   export let width = 25;
   export let height = 25;
 
+  $: isDraggable = id === $gridStart || id === $gridFinish;
+
   function visitNode(event: MouseEvent) {
     const mouseButton = event.buttons;
-    if (mousePressed && gridNode.nodeType !== 'Start' && gridNode.nodeType !== 'Finish') {
+    if (mousePressed && !isDraggable) {
       if (mouseButton == 1) {
         // Add wall with left click
-        gridNode.nodeType = 'Wall';
+        grid.updateState(id, 'wall');
       } else if (mouseButton == 2) {
         // Remove wall with right click
-        gridNode.nodeType = 'Empty';
+        grid.updateState(id, 'empty');
       }
     }
   }
 
   function toggleNode(event: MouseEvent) {
     const mouseButton = event.buttons;
-    if (gridNode.nodeType !== 'Start' && gridNode.nodeType !== 'Finish') {
+    if (!isDraggable) {
       if (mouseButton == 1) {
         // Add wall with left click
-        gridNode.nodeType = 'Wall';
+        grid.updateState(id, 'wall');
       } else if (mouseButton == 2) {
         // Remove wall with right click
-        gridNode.nodeType = 'Empty';
+        grid.updateState(id, 'empty');
       }
+    }
+  }
+
+  function dropNode(event: CustomEvent) {
+    const sourceId = Number(event.detail.data);
+    const target = event.target as HTMLElement;
+    const targetId = Number(target.id.split('-')[1]);
+
+    if (sourceId === $gridStart) {
+      grid.updateState(targetId, 'start');
+      grid.updateState(sourceId, 'empty');
+    } else if (sourceId === $gridFinish) {
+      grid.updateState(targetId, 'finish');
+      grid.updateState(sourceId, 'empty');
     }
   }
 </script>
 
-<div
-  class="inline-block cursor-default select-none border-b border-r border-b-zinc-200 border-r-zinc-200 bg-zinc-50 hover:opacity-80"
-  class:node-start={gridNode.nodeType === 'Start'}
-  class:node-finish={gridNode.nodeType === 'Finish'}
-  class:node-wall={gridNode.nodeType === 'Wall'}
-  class:node-path={gridNode.nodeType === 'Path'}
-  style="width: {width}px; height: {height}px;"
+<td
+  id="node-{id}"
+  use:draggable={{ data: id, isDraggable }}
+  use:dropzone
+  on:dropzone={dropNode}
   on:mouseenter={visitNode}
   on:mousedown={toggleNode}
   on:contextmenu|preventDefault
-  draggable="false"
-  role="button"
-  tabindex="0"
-></div>
+  class="cursor-default select-none border border-zinc-200 bg-zinc-50 hover:opacity-80"
+  class:node-start={id === $gridStart}
+  class:node-finish={id === $gridFinish}
+  class:node-wall={$grid[id].state === 'wall'}
+  class:node-path={$grid[id].state === 'path'}
+  style="width: {width}px; height: {height}px;"
+/>
 
 <style>
+  :global(.droppable) {
+    outline: 1px solid #27272a;
+    outline-offset: 0.1rem;
+  }
   .node-start {
     background-color: #10b981;
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { grid } from './pathfinding.store';
+  import { grid } from "./pathfinding.store";
 
   const pathfindingAlgorithms = ['Dijkstra', 'A Star', 'Breath First Search', 'Depth First Search'];
   const pathfindingMazes = ['-', 'Recursive Maze', 'Random Maze'];

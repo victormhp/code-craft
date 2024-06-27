@@ -39,22 +39,32 @@ interface DraggableElement {
   isDraggable: boolean;
 }
 
-export const dragabble: DraggableAction = (element: HTMLElement, options: DraggableElement) => {
+export const draggable: DraggableAction = (element: HTMLElement, options: DraggableElement) => {
   let state = { ...options };
-  if (!state.isDraggable) return;
-  element.draggable = true;
-  element.style.cursor = 'grab';
 
   const handleDragStart = (event: DragEvent) => {
     if (!event.dataTransfer) return;
     event.dataTransfer.setData('text/plain', state.data);
   };
 
-  element.addEventListener('dragstart', handleDragStart);
+  const updateDraggable = () => {
+    if (state.isDraggable) {
+      element.draggable = true;
+      element.style.cursor = 'grab';
+      element.addEventListener('dragstart', handleDragStart);
+    } else {
+      element.draggable = false;
+      element.style.cursor = 'default';
+      element.removeEventListener('dragstart', handleDragStart);
+    }
+  };
+
+  updateDraggable();
 
   return {
     update(options: DraggableElement) {
       state = { ...options };
+      updateDraggable();
     },
     destroy() {
       element.removeEventListener('dragstart', handleDragStart);
@@ -62,19 +72,16 @@ export const dragabble: DraggableAction = (element: HTMLElement, options: Dragga
   };
 };
 
-interface DropzoneState extends DraggableElement {
+interface DropzoneElement {
   dropEffect: DataTransfer['dropEffect'];
   dragoverClass: string;
 }
 
-export const dropzone: DropzoneAction = (element: HTMLElement, options: DraggableElement) => {
-  let state: DropzoneState = {
-    dragoverClass: 'droppable',
-    dropEffect: 'move',
-    ...options
+export const dropzone: DropzoneAction = (element: HTMLElement, className: string = 'droppable') => {
+  const state: DropzoneElement = {
+    dragoverClass: className,
+    dropEffect: 'move'
   };
-
-  if (state.isDraggable) return;
 
   const handleDragEnter = (event: DragEvent) => {
     const target = event.target as HTMLElement;
@@ -111,13 +118,6 @@ export const dropzone: DropzoneAction = (element: HTMLElement, options: Draggabl
   element.addEventListener('drop', handleDrop);
 
   return {
-    update(options: DraggableElement) {
-      state = {
-        dropEffect: 'move',
-        dragoverClass: 'droppable',
-        ...options
-      };
-    },
     destroy() {
       element.removeEventListener('dragenter', handleDragEnter);
       element.removeEventListener('dragleave', handleDragLeave);
