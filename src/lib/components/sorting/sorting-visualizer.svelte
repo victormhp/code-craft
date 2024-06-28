@@ -96,6 +96,34 @@
     sortingProgress.reset();
     $sortingIsPlaying = false;
   }
+
+  $: mediaButtons = [
+    {
+      icon: 'mingcute:shuffle-2-line',
+      action: randomize,
+      disabled: $sortingIsPlaying || ($canStep && $canStepBack)
+    },
+    {
+      icon: 'mingcute:skip-previous-fill',
+      action: sortingProgress.stepBack,
+      disabled: $sortingIsPlaying || !canStepBack
+    },
+    {
+      icon: $sortingIsPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill',
+      action: play,
+      disabled: !$canStep
+    },
+    {
+      icon: 'mingcute:skip-forward-fill',
+      action: sortingProgress.step,
+      disabled: $sortingIsPlaying || !canStep
+    },
+    {
+      icon: 'mingcute:refresh-3-line',
+      action: restart,
+      disabled: $sortingIsPlaying || $sortingProgress.current < 1
+    }
+  ];
 </script>
 
 <svelte:window on:keydown={keysControls} />
@@ -113,69 +141,29 @@
   <div class="space-y-4">
     <Progress max={$sortingProgress.total - 1} value={$sortingProgress.current} />
     <div
-      class="flex justify-between gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
+      id="media"
+      class="flex justify-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
     >
-      <button
-        class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-        type="button"
-        on:click={randomize}
-        disabled={$sortingIsPlaying || ($canStep && $canStepBack)}
-      >
-        <iconify-icon icon="mingcute:shuffle-2-line" width="20" height="20" style="color: #27272a"
-        ></iconify-icon>
-      </button>
-      <div class="flex gap-2">
+      {#each mediaButtons as { icon, action, disabled }}
         <button
           class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
           type="button"
-          on:click={sortingProgress.stepBack}
-          disabled={$sortingIsPlaying || !$canStepBack}
+          on:click={action}
+          {disabled}
         >
-          <iconify-icon
-            icon="mingcute:skip-previous-fill"
-            width="20"
-            height="20"
-            style="color: #27272a"
-          >
-          </iconify-icon>
+          <iconify-icon {icon} width="20" height="20" style="color: #27272a"></iconify-icon>
         </button>
-        <button
-          class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-          type="button"
-          on:click={play}
-          disabled={!$canStep}
-        >
-          <iconify-icon
-            icon={$sortingIsPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill'}
-            width="20"
-            height="20"
-            style="color: #27272a"
-          ></iconify-icon>
-        </button>
-        <button
-          class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-          type="button"
-          on:click={sortingProgress.step}
-          disabled={$sortingIsPlaying || !$canStep}
-        >
-          <iconify-icon
-            icon="mingcute:skip-forward-fill"
-            width="20"
-            height="20"
-            style="color: #27272a"
-          >
-          </iconify-icon>
-        </button>
-      </div>
-      <button
-        class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-        type="button"
-        on:click={restart}
-        disabled={$sortingIsPlaying || $sortingProgress.current < 1}
-      >
-        <iconify-icon icon="mingcute:refresh-3-line" width="20" height="20" style="color: #27272a"
-        ></iconify-icon>
-      </button>
+      {/each}
     </div>
   </div>
 </div>
+
+<style>
+  #media button:first-child {
+    margin-right: auto;
+  }
+
+  #media button:last-child {
+    margin-left: auto;
+  }
+</style>
