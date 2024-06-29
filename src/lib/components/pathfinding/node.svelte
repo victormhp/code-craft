@@ -11,7 +11,7 @@
 
   function visitNode(event: MouseEvent) {
     const mouseButton = event.buttons;
-    if (mousePressed && !isDraggable) {
+    if (mousePressed) {
       if (mouseButton == 1) {
         // Add wall with left click
         grid.updateState(id, 'wall');
@@ -24,53 +24,62 @@
 
   function toggleNode(event: MouseEvent) {
     const mouseButton = event.buttons;
-    if (!isDraggable) {
-      if (mouseButton == 1) {
-        // Add wall with left click
-        grid.updateState(id, 'wall');
-      } else if (mouseButton == 2) {
-        // Remove wall with right click
-        grid.updateState(id, 'empty');
-      }
+    if (mouseButton == 1) {
+      // Add wall with left click
+      grid.updateState(id, 'wall');
+    } else if (mouseButton == 2) {
+      // Remove wall with right click
+      grid.updateState(id, 'empty');
     }
   }
 
   function dropNode(event: CustomEvent) {
     const sourceId = Number(event.detail.data);
-    const target = event.target as HTMLElement;
-    const targetId = Number(target.id.split('-')[1]);
+
+    // You can't do that bro
+    if (sourceId === id) return;
+    if (sourceId === $gridStart && id === $gridFinish) return;
+    if (sourceId === $gridFinish && id === $gridStart) return;
 
     if (sourceId === $gridStart) {
-      grid.updateState(targetId, 'start');
+      grid.updateState(id, 'start');
       grid.updateState(sourceId, 'empty');
     } else if (sourceId === $gridFinish) {
-      grid.updateState(targetId, 'finish');
+      grid.updateState(id, 'finish');
       grid.updateState(sourceId, 'empty');
     }
   }
 </script>
 
-<td
-  id="node-{id}"
-  use:draggable={{ data: id, isDraggable }}
-  use:dropzone
-  on:dropzone={dropNode}
-  on:mouseenter={visitNode}
-  on:mousedown={toggleNode}
-  on:contextmenu|preventDefault
-  class="cursor-default select-none border border-zinc-200 bg-zinc-50 hover:opacity-80"
-  class:node-start={id === $gridStart}
-  class:node-finish={id === $gridFinish}
-  class:node-wall={$grid[id].state === 'wall'}
-  class:node-path={$grid[id].state === 'path'}
-  style="width: {width}px; height: {height}px;"
-/>
+{#if isDraggable}
+  <td
+    id="node-{id}"
+    use:draggable={{ data: id, isDraggable }}
+    class="select-none border border-zinc-200 hover:opacity-80"
+    class:node-start={id === $gridStart}
+    class:node-finish={id === $gridFinish}
+    style="width: {width}px; height: {height}px;"
+  />
+{:else}
+  <td
+    id="node-{id}"
+    use:dropzone
+    on:dropzone={dropNode}
+    on:mouseenter|preventDefault={visitNode}
+    on:mousedown|preventDefault={toggleNode}
+    on:contextmenu|preventDefault
+    class="select-none border border-zinc-200 bg-zinc-100 hover:opacity-80"
+    class:node-wall={$grid[id].state === 'wall'}
+    style="width: {width}px; height: {height}px;"
+  />
+{/if}
 
 <style>
   :global(.droppable) {
     outline: 1px solid #27272a;
     outline-offset: 0.1rem;
   }
+
   .node-start {
     background-color: #10b981;
   }
@@ -84,7 +93,6 @@
     animation-name: wall-animation;
     animation-duration: 0.15s;
     animation-timing-function: ease-out;
-    animation-delay: 0;
     animation-direction: alternate;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;

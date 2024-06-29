@@ -1,45 +1,57 @@
 <script lang="ts">
-  import { grid } from "./pathfinding.store";
+  import { grid, gridGoals } from './pathfinding.store';
 
   const pathfindingAlgorithms = ['Dijkstra', 'A Star', 'Breath First Search', 'Depth First Search'];
   const pathfindingMazes = ['-', 'Recursive Maze', 'Random Maze'];
+
+  const clearButtons = [
+    { name: 'Clear Path', action: grid.clearPath },
+    { name: 'Clear Board', action: grid.clearBoard },
+    { name: 'Reset', action: () => grid.reset($gridGoals.start, $gridGoals.finish) }
+  ];
 </script>
 
 <div
-  class="flex flex-row items-center justify-between gap-2 overflow-x-auto whitespace-nowrap rounded-lg border border-zinc-200 bg-zinc-100 px-4 py-2 shadow-sm"
+  class="flex flex-col items-center justify-between gap-4 whitespace-nowrap rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm lg:flex-row lg:gap-8 lg:px-4"
 >
-  <div class="flex shrink-0 flex-row items-center gap-4">
+  <div class="grid auto-cols-fr grid-flow-col gap-4">
     <div class="flex flex-col items-start gap-1">
-      <label class="pl-1 text-sm text-zinc-500" for="pathfinding">Algorithm</label>
-      <select id="pathfinding" class="rounded border border-zinc-200 bg-zinc-50 p-2">
+      <label class="pl-1 text-xs text-zinc-500 sm:text-sm" for="pathfinding">Algorithm</label>
+      <select
+        id="pathfinding"
+        class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
+      >
         {#each pathfindingAlgorithms as algorithm}
           <option value={algorithm}>{algorithm}</option>
         {/each}
       </select>
     </div>
     <div class="flex flex-col items-start gap-1">
-      <label class="pl-1 text-sm text-zinc-500" for="maze">Maze</label>
-      <select id="maze" class="rounded border border-zinc-200 bg-zinc-50 p-2">
+      <label class="pl-1 text-xs text-zinc-500 lg:text-sm" for="maze">Maze</label>
+      <select
+        id="maze"
+        class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
+      >
         {#each pathfindingMazes as maze}
           <option value={maze}>{maze}</option>
         {/each}
       </select>
     </div>
-    <button
-      class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-      type="button"
-    >
-      <p class="font-bold">Clear Path</p>
-    </button>
-    <button
-      class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-      type="button"
-      on:click={grid.clearBoard}
-    >
-      <p class="font-bold">Clear Board</p>
-    </button>
   </div>
-  <div class="shrink-0">
+
+  <div class="grid auto-cols-fr grid-flow-col gap-4">
+    {#each clearButtons as { name, action }}
+      <button
+        class="rounded border bg-zinc-200 px-4 py-2 text-xs transition-colors hover:bg-zinc-300 sm:text-base"
+        type="button"
+        on:click={action}
+      >
+        <p class="font-bold">{name}</p>
+      </button>
+    {/each}
+  </div>
+
+  <div class="ml-auto">
     <button
       class="rounded-full border bg-zinc-800 p-2 transition-colors hover:bg-zinc-700 focus-visible:bg-zinc-700"
       type="button"

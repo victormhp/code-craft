@@ -1,18 +1,26 @@
 import { derived, writable } from 'svelte/store';
-import type { Grid, GridNode, NodeState } from './pathfinding.types';
+import type { Readable } from 'svelte/motion';
+import type { Grid, GridDimensions, GridGoals, NodeState } from './pathfinding.types';
 
 function createGrid(initialValues: Grid) {
     const grid = writable<Grid>(initialValues);
-
-    function add(node: GridNode) {
-        grid.update((state) => [...state, node]);
-    }
 
     function updateState(id: number, nodeState: NodeState) {
         grid.update((state) => {
             state[id].state = nodeState;
             return [...state];
         });
+    }
+
+    function clearPath() {
+        grid.update((state) =>
+            state.map((node) => {
+                if (node.state === 'path') {
+                    return { ...node, state: 'empty' };
+                }
+                return node;
+            })
+        );
     }
 
     function clearBoard() {
@@ -26,14 +34,19 @@ function createGrid(initialValues: Grid) {
         );
     }
 
-    function reset() {
-        grid.set([]);
+    function reset(start: number, finish: number) {
+        grid.update((state) => {
+            state.forEach((node) => (node.state = 'empty'));
+            state[start].state = 'start';
+            state[finish].state = 'finish';
+            return [...state];
+        });
     }
 
     return {
         ...grid,
-        add,
         updateState,
+        clearPath,
         clearBoard,
         reset
     };
@@ -46,4 +59,15 @@ export const gridStart = derived(grid, ($grid) => {
 
 export const gridFinish = derived(grid, ($grid) => {
     return $grid.findIndex((cell) => cell.state === 'finish');
+});
+
+export const gridDimensions = writable<GridDimensions>({} as GridDimensions);
+
+export const gridGoals: Readable<GridGoals> = derived(gridDimensions, ($gridDimensions) => {
+    const startId = $gridDimensions.columns * 2 + 2;
+    const finishId = $gridDimensions.columns * ($gridDimensions.rows - 2) - 3;
+    return {
+        start: startId,
+        finish: finishId
+    };
 });

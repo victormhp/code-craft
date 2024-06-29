@@ -1,5 +1,3 @@
-// export type Grid = number[][];
-
 export interface NodeColors {
     empty: string;
     wall: string;
@@ -16,4 +14,14 @@ export interface GridNode {
 }
 
 export type Grid = GridNode[];
+
+export interface GridDimensions {
+    rows: number;
+    columns: number;
+}
+
+export interface GridGoals {
+    start: number;
+    finish: number;
+}
 

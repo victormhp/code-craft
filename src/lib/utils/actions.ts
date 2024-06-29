@@ -52,10 +52,6 @@ export const draggable: DraggableAction = (element: HTMLElement, options: Dragga
       element.draggable = true;
       element.style.cursor = 'grab';
       element.addEventListener('dragstart', handleDragStart);
-    } else {
-      element.draggable = false;
-      element.style.cursor = 'default';
-      element.removeEventListener('dragstart', handleDragStart);
     }
   };
 
@@ -77,13 +73,14 @@ interface DropzoneElement {
   dragoverClass: string;
 }
 
-export const dropzone: DropzoneAction = (element: HTMLElement, className: string = 'droppable') => {
+export const dropzone: DropzoneAction = (element: HTMLElement) => {
   const state: DropzoneElement = {
-    dragoverClass: className,
+    dragoverClass: 'droppable',
     dropEffect: 'move'
   };
 
   const handleDragEnter = (event: DragEvent) => {
+    event.preventDefault();
     const target = event.target as HTMLElement;
     target.classList.add(state.dragoverClass);
   };
