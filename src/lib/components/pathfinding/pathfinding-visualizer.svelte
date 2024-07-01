@@ -1,6 +1,6 @@
 <script lang="ts">
   import 'iconify-icon';
-  import type { Grid, GridNode } from './pathfinding.types';
+  import type { Grid, GridCell } from './pathfinding.types';
   import { grid } from './pathfinding.store';
   import Cell from './cell.svelte';
 
@@ -19,7 +19,7 @@
     const newGrid: Grid = Array.from({ length: rows }, () => []);
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
-        const node: GridNode = { coordinates: { x, y }, state: 'empty' };
+        const node: GridCell = { coordinates: { x, y }, state: 'empty' };
         newGrid[y].push(node);
       }
     }
