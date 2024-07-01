@@ -1,4 +1,4 @@
-export interface NodeColors {
+export interface CellColors {
     empty: string;
     wall: string;
     path: string;
@@ -6,22 +6,16 @@ export interface NodeColors {
     finish: string;
 }
 
-export type NodeState = keyof NodeColors;
+export type CellState = keyof CellColors;
 
-export interface GridNode {
-    position: number[];
-    state: NodeState;
+export interface Coordinates {
+    x: number;
+    y: number;
 }
 
-export type Grid = GridNode[];
-
-export interface GridDimensions {
-    rows: number;
-    columns: number;
+export interface GridCell {
+    coordinates: Coordinates;
+    state: CellState;
 }
 
-export interface GridGoals {
-    start: number;
-    finish: number;
-}
-
+export type Grid = GridCell[][];

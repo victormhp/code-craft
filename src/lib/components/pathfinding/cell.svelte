@@ -2,22 +2,26 @@
   import { draggable, dropzone } from '$lib/utils';
   import { grid, gridStart, gridFinish } from './pathfinding.store';
 
-  export let id: number;
+  export let x: number;
+  export let y: number;
   export let mousePressed = false;
   export let width = 25;
   export let height = 25;
 
-  $: isDraggable = id === $gridStart || id === $gridFinish;
+  $: isWall = $grid[y][x].state === 'wall';
+  $: isStart = x === $gridStart.x && y === $gridStart.y;
+  $: isFinish = x === $gridFinish.x && y === $gridFinish.y;
+  $: isDraggable = isStart || isFinish;
 
   function visitNode(event: MouseEvent) {
     const mouseButton = event.buttons;
     if (mousePressed) {
       if (mouseButton == 1) {
         // Add wall with left click
-        grid.updateState(id, 'wall');
+        grid.updateState(x, y, 'wall');
       } else if (mouseButton == 2) {
         // Remove wall with right click
-        grid.updateState(id, 'empty');
+        grid.updateState(x, y, 'empty');
       }
     }
   }
@@ -26,50 +30,44 @@
     const mouseButton = event.buttons;
     if (mouseButton == 1) {
       // Add wall with left click
-      grid.updateState(id, 'wall');
+      grid.updateState(x, y, 'wall');
     } else if (mouseButton == 2) {
       // Remove wall with right click
-      grid.updateState(id, 'empty');
+      grid.updateState(x, y, 'empty');
     }
   }
 
   function dropNode(event: CustomEvent) {
-    const sourceId = Number(event.detail.data);
+    let [destX, destY] = event.detail.data.split('-');
+    destX = Number(destX);
+    destY = Number(destY);
 
-    // You can't do that bro
-    if (sourceId === id) return;
-    if (sourceId === $gridStart && id === $gridFinish) return;
-    if (sourceId === $gridFinish && id === $gridStart) return;
-
-    if (sourceId === $gridStart) {
-      grid.updateState(id, 'start');
-      grid.updateState(sourceId, 'empty');
-    } else if (sourceId === $gridFinish) {
-      grid.updateState(id, 'finish');
-      grid.updateState(sourceId, 'empty');
+    if (destX === $gridStart.x && destY === $gridStart.y) {
+      grid.updateState(x, y, 'start');
+    } else if (destX === $gridFinish.x && destY === $gridFinish.y) {
+      grid.updateState(x, y, 'finish');
     }
+    grid.updateState(destX, destY, 'empty');
   }
 </script>
 
 {#if isDraggable}
   <td
-    id="node-{id}"
-    use:draggable={{ data: id, isDraggable }}
+    use:draggable={{ data: `${x}-${y}`, isDraggable }}
     class="select-none border border-zinc-200 hover:opacity-80"
-    class:node-start={id === $gridStart}
-    class:node-finish={id === $gridFinish}
+    class:node-start={isStart}
+    class:node-finish={isFinish}
     style="width: {width}px; height: {height}px;"
   />
 {:else}
   <td
-    id="node-{id}"
     use:dropzone
     on:dropzone={dropNode}
     on:mouseenter|preventDefault={visitNode}
     on:mousedown|preventDefault={toggleNode}
     on:contextmenu|preventDefault
     class="select-none border border-zinc-200 bg-zinc-100 hover:opacity-80"
-    class:node-wall={$grid[id].state === 'wall'}
+    class:node-wall={isWall}
     style="width: {width}px; height: {height}px;"
   />
 {/if}

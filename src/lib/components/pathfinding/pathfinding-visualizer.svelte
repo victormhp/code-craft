@@ -1,28 +1,26 @@
 <script lang="ts">
   import 'iconify-icon';
   import type { Grid, GridNode } from './pathfinding.types';
-  import { grid, gridDimensions, gridGoals } from './pathfinding.store';
-  import Node from './node.svelte';
+  import { grid } from './pathfinding.store';
+  import Cell from './cell.svelte';
 
   let mousePressed = false;
-  let nodeSize = 25;
+  let cellSize = 25;
   let gridWidth: number;
   let gridHeight: number;
 
-  $: $gridDimensions.rows = Math.floor(gridHeight / nodeSize);
-  $: $gridDimensions.columns = Math.floor(gridWidth / nodeSize);
+  $: rows = Math.floor(gridHeight / cellSize);
+  $: cols = Math.floor(gridWidth / cellSize);
 
-  $: xValues = Array.from({ length: $gridDimensions.columns }, (_, i) => i);
-  $: yValues = Array.from({ length: $gridDimensions.rows }, (_, i) => i);
+  $: xValues = Array.from({ length: cols }, (_, i) => i);
+  $: yValues = Array.from({ length: rows }, (_, i) => i);
 
   $: {
-    const newGrid: Grid = [];
-    for (let y = 0; y < $gridDimensions.rows; y++) {
-      for (let x = 0; x < $gridDimensions.columns; x++) {
-        const id = x + y * $gridDimensions.columns;
-        const state = id === $gridGoals.start ? 'start' : id === $gridGoals.finish ? 'finish' : 'empty';
-        const node: GridNode = { position: [x, y], state };
-        newGrid.push(node);
+    const newGrid: Grid = Array.from({ length: rows }, () => []);
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const node: GridNode = { coordinates: { x, y }, state: 'empty' };
+        newGrid[y].push(node);
       }
     }
 
@@ -45,7 +43,7 @@
     {#each yValues as y (y)}
       <tr class="table-row">
         {#each xValues as x (x)}
-          <Node id={x + y * $gridDimensions.columns} bind:mousePressed width={nodeSize} height={nodeSize} />
+          <Cell {x} {y} bind:mousePressed width={cellSize} height={cellSize} />
         {/each}
       </tr>
     {/each}

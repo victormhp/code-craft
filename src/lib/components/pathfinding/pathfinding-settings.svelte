@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { grid, gridGoals } from './pathfinding.store';
+  import { grid } from './pathfinding.store';
 
   const pathfindingAlgorithms = ['Dijkstra', 'A Star', 'Breath First Search', 'Depth First Search'];
   const pathfindingMazes = ['-', 'Recursive Maze', 'Random Maze'];
@@ -7,7 +7,7 @@
   const clearButtons = [
     { name: 'Clear Path', action: grid.clearPath },
     { name: 'Clear Board', action: grid.clearBoard },
-    { name: 'Reset', action: () => grid.reset($gridGoals.start, $gridGoals.finish) }
+    { name: 'Reset', action: grid.reset },
   ];
 </script>
 
