@@ -1,14 +1,10 @@
 import type { Action } from 'svelte/action';
 
-interface Attributes {
-  'on:outside'?: (event: CustomEvent) => void;
-  'on:dropzone'?: (event: CustomEvent) => void;
-}
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type ClickOutsideAction = Action<HTMLElement, any, Attributes>;
-type DraggableAction = Action<HTMLElement, any, Attributes>;
-type DropzoneAction = Action<HTMLElement, any, Attributes>;
+type ClickOutsideAction = Action<
+  HTMLElement,
+  { ignore: string },
+  { 'on:outside'?: (e: CustomEvent) => void }
+>;
 
 export const clickOutside: ClickOutsideAction = (
   element: HTMLElement,
@@ -34,12 +30,13 @@ export const clickOutside: ClickOutsideAction = (
   };
 };
 
-interface DraggableElement {
+interface DraggableProps {
   data: string;
   isDraggable: boolean;
 }
 
-export const draggable: DraggableAction = (element: HTMLElement, options: DraggableElement) => {
+type DraggableAction = Action<HTMLElement, DraggableProps>;
+export const draggable: DraggableAction = (element: HTMLElement, options: DraggableProps) => {
   let state = { ...options };
 
   const handleDragStart = (event: DragEvent) => {
@@ -58,7 +55,7 @@ export const draggable: DraggableAction = (element: HTMLElement, options: Dragga
   updateDraggable();
 
   return {
-    update(options: DraggableElement) {
+    update(options: DraggableProps) {
       state = { ...options };
       updateDraggable();
     },
@@ -68,13 +65,15 @@ export const draggable: DraggableAction = (element: HTMLElement, options: Dragga
   };
 };
 
-interface DropzoneElement {
+interface DropzoneProps {
   dropEffect: DataTransfer['dropEffect'];
   dragoverClass: string;
 }
 
+type DropzoneAction = Action<HTMLElement, DropzoneProps, { 'on:dropzone'?: (e: CustomEvent) => void }>;
+
 export const dropzone: DropzoneAction = (element: HTMLElement) => {
-  const state: DropzoneElement = {
+  const state: DropzoneProps = {
     dragoverClass: 'droppable',
     dropEffect: 'move'
   };
