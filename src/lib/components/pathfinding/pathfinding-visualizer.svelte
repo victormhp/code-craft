@@ -31,7 +31,7 @@
   const release = () => (mousePressed = false);
 </script>
 
-<svelte:window
+<svelte:body
   on:mousedown={press}
   on:mouseup={release}
   on:dragstart={press}

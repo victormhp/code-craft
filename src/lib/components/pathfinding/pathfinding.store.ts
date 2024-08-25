@@ -12,6 +12,42 @@ function createGrid(initialValues: Grid) {
         });
     }
 
+    const directions: Coordinates[] = [
+        { x: 0, y: -1 },
+        { x: 1, y: 0 },
+        { x: 0, y: 1 },
+        { x: -1, y: 0 }
+    ];
+
+    function createMaze(currentGrid: Grid, x: number, y: number) {
+        reset();
+        const recursiveBacktracking = (currentGrid: Grid, x: number, y: number) => {
+            const shuffleDirections = directions.sort(() => Math.random() - 0.5);
+            for (const direction of shuffleDirections) {
+                const newX = x + direction.x * 2;
+                const newY = y + direction.y * 2;
+
+                if (
+                    newX > 0 &&
+                    newX < currentGrid[0].length - 1 &&
+                    newY > 0 &&
+                    newY < currentGrid.length - 1 &&
+                    currentGrid[newY][newX].state === 'empty'
+                ) {
+                    // Carve out a passage between the current cell and the new cell
+                    currentGrid[y + direction.y][x + direction.x].state = 'wall';
+                    currentGrid[newY][newX].state = 'wall';
+
+                    // Recursively generate the maze from the new cell
+                    recursiveBacktracking(currentGrid, newX, newY);
+                }
+            }
+        };
+
+        recursiveBacktracking(currentGrid, x, y);
+        grid.set([...currentGrid]);
+    }
+
     function clearPath() {
         grid.update((state) => {
             const rows = state.length;
@@ -66,6 +102,7 @@ function createGrid(initialValues: Grid) {
     return {
         ...grid,
         updateState,
+        createMaze,
         clearPath,
         clearBoard,
         reset

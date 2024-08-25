@@ -2,12 +2,17 @@
   import { grid } from './pathfinding.store';
 
   const pathfindingAlgorithms = ['Dijkstra', 'A Star', 'Breath First Search', 'Depth First Search'];
-  const pathfindingMazes = ['-', 'Recursive Maze', 'Random Maze'];
+
+  const pathfindingMazes = [
+    { name: '-', action: grid.clearBoard },
+    { name: 'Recursive Maze', action: () => grid.createMaze($grid, 0, 0) }
+  ];
+  let selectedMaze = pathfindingMazes[0];
 
   const clearButtons = [
     { name: 'Clear Path', action: grid.clearPath },
     { name: 'Clear Board', action: grid.clearBoard },
-    { name: 'Reset', action: grid.reset },
+    { name: 'Reset', action: grid.reset }
   ];
 </script>
 
@@ -31,9 +36,11 @@
       <select
         id="maze"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
+        bind:value={selectedMaze}
+        on:change={selectedMaze.action}
       >
         {#each pathfindingMazes as maze}
-          <option value={maze}>{maze}</option>
+          <option value={maze}>{maze.name}</option>
         {/each}
       </select>
     </div>
