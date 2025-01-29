@@ -22,7 +22,7 @@
     <section
       in:fade={{ duration: 200 }}
       out:fade={{ duration: 200 }}
-      class="grid w-full select-none grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] place-items-center gap-8"
+      class="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] place-items-center gap-8 select-none"
     >
       {#each routes as { title, img, path }}
         <a href={path} class="contents">

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { particlesSettings } from './particles.store';
+
   const effects = [
     { name: 'none', label: 'None' },
     { name: 'physics', label: 'Physics' },
@@ -51,7 +52,7 @@
   </div>
   <button
     class="rounded-lg bg-zinc-900 px-4 py-2 font-bold text-zinc-50 hover:bg-zinc-800"
-    on:click={particlesSettings.reset}
+    onclick={particlesSettings.reset}
   >
     Reset
   </button>

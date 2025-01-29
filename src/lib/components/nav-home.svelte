@@ -11,12 +11,13 @@
 </script>
 
 <header class="z-50 w-full bg-transparent px-4 py-3 lg:px-16 lg:py-6">
-  <nav class="flex select-none items-center justify-between">
+  <nav class="flex items-center justify-between select-none">
     <div class="hidden lg:flex lg:gap-4">
       <a
         class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://www.linkedin.com/in/victormhp"
         target="_blank"
+        aria-label="LinkedIn Link"
         rel="noopener noreferrer"
       >
         <iconify-icon icon="ri:linkedin-fill" width="20" height="20" style="color: #18181b"
@@ -26,6 +27,7 @@
         class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://github.com/victormhp/code-craft"
         target="_blank"
+        aria-label="Github Link"
         rel="noopener noreferrer"
       >
         <iconify-icon icon="bi:github" width="20" height="20" style="color: #18181b"></iconify-icon>
@@ -38,6 +40,7 @@
     <div class="relative flex gap-4">
       <button
         class="cursor-pointer rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300 focus-visible:bg-zinc-300"
+        aria-label="Toggle menu visibility"
         on:click={toggleMenu}
       >
         <iconify-icon
@@ -50,6 +53,7 @@
       <button
         id="btn-particles-settings"
         class="cursor-pointer rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300 focus-visible:bg-zinc-300"
+        aria-label="Toggle particles settings"
         on:click={toggleParticleSettings}
       >
         <iconify-icon icon="lucide:settings-2" width="20" height="20" style="color: #18181b"
@@ -59,7 +63,7 @@
         aria-hidden={isClosed}
         on:outside={closeParticleSettings}
         use:clickOutside={{ ignore: 'btn-particles-settings' }}
-        class="absolute right-0 top-12 z-50 w-[300px] aria-hidden:hidden"
+        class="absolute top-12 right-0 z-50 w-[300px] aria-hidden:hidden"
       >
         <ParticlesSettings />
       </div>

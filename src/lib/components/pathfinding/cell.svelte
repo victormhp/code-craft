@@ -54,11 +54,11 @@
 {#if isDraggable}
   <td
     use:draggable={{ data: `${x}-${y}`, isDraggable }}
-    class="select-none border border-zinc-200 hover:opacity-80"
+    class="border border-zinc-200 select-none hover:opacity-80"
     class:node-start={isStart}
     class:node-finish={isFinish}
     style="width: {width}px; height: {height}px;"
-  />
+  ></td>
 {:else}
   <td
     use:dropzone
@@ -66,10 +66,10 @@
     on:mouseenter|preventDefault={visitNode}
     on:mousedown|preventDefault={toggleNode}
     on:contextmenu|preventDefault
-    class="select-none border border-zinc-200 bg-zinc-100 hover:opacity-80"
+    class="border border-zinc-200 bg-zinc-100 select-none hover:opacity-80"
     class:node-wall={isWall}
     style="width: {width}px; height: {height}px;"
-  />
+  ></td>
 {/if}
 
 <style>

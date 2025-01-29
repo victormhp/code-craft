@@ -70,7 +70,11 @@ interface DropzoneProps {
   dragoverClass: string;
 }
 
-type DropzoneAction = Action<HTMLElement, DropzoneProps, { 'on:dropzone'?: (e: CustomEvent) => void }>;
+type DropzoneAction = Action<
+  HTMLElement,
+  DropzoneProps,
+  { 'on:dropzone'?: (e: CustomEvent) => void }
+>;
 
 export const dropzone: DropzoneAction = (element: HTMLElement) => {
   const state: DropzoneProps = {

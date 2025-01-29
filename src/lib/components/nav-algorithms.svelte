@@ -15,6 +15,7 @@
         class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://www.linkedin.com/in/victormhp"
         target="_blank"
+        aria-label="LinkedIn Link"
         rel="noopener noreferrer"
       >
         <iconify-icon icon="ri:linkedin-fill" width="20" height="20"></iconify-icon>
@@ -23,6 +24,7 @@
         class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://github.com/victormhp/code-craft"
         target="_blank"
+        aria-label="Github Link"
         rel="noopener noreferrer"
       >
         <iconify-icon icon="bi:github" width="20" height="20"></iconify-icon>

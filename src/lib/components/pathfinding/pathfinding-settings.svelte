@@ -17,7 +17,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center justify-between gap-4 whitespace-nowrap rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm lg:flex-row lg:gap-8 lg:px-4"
+  class="flex flex-col items-center justify-between gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-2 whitespace-nowrap shadow-sm lg:flex-row lg:gap-8 lg:px-4"
 >
   <div class="grid auto-cols-fr grid-flow-col gap-4">
     <div class="flex flex-col items-start gap-1">
