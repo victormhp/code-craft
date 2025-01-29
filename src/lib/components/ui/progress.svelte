@@ -1,10 +1,14 @@
 <script lang="ts">
-  export let value: number | undefined = undefined;
-  export let min = 0;
-  export let max = 100;
+  type ProgressProps = {
+    value: number | undefined;
+    min: number;
+    max: number;
+    labelledby: string;
+  };
 
-  export let labelledby = '';
-  $: fillPercent = value ? (100 * (value - min)) / (max - min) : 0;
+  let { value = undefined, min = 0, max = 100, labelledby = '' }: ProgressProps = $props();
+
+  const fillPercent = $derived(value ? (100 * (value - min)) / (max - min) : 0);
 </script>
 
 <div

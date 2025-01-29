@@ -6,7 +6,7 @@
   class="z-50 w-full border-b border-zinc-200 bg-zinc-50 px-4 py-2 shadow-sm lg:px-16 lg:py-4"
 >
   <nav class="flex items-center justify-between">
-    <a class="homelink coursor-pointer flex items-center gap-4" href="/">
+    <a class="homelink flex items-center gap-4" href="/">
       <img class="size-12" src="logo-no-bg.svg" alt="Web logo" />
       <h1 class="font-virgil text-2xl font-bold tracking-wider lg:text-3xl">Code Craft</h1>
     </a>

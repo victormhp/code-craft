@@ -20,7 +20,7 @@
         aria-label="LinkedIn Link"
         rel="noopener noreferrer"
       >
-        <iconify-icon icon="ri:linkedin-fill" width="20" height="20" style="color: #18181b"
+        <iconify-icon icon="ri:linkedin-fill" width="20" height="20" style="color: var(--color-zinc-900)"
         ></iconify-icon>
       </a>
       <a
@@ -30,16 +30,16 @@
         aria-label="Github Link"
         rel="noopener noreferrer"
       >
-        <iconify-icon icon="bi:github" width="20" height="20" style="color: #18181b"></iconify-icon>
+        <iconify-icon icon="bi:github" width="20" height="20" style="color: var(--color-gray-900)"></iconify-icon>
       </a>
     </div>
-    <a class="homelink coursor-pointer flex items-center gap-4" href="/">
+    <a class="homelink flex items-center gap-4" href="/">
       <img src="logo-no-bg.svg" alt="Web logo" />
       <h1 class="font-virgil text-2xl font-bold tracking-wider lg:text-4xl">Code Craft</h1>
     </a>
     <div class="relative flex gap-4">
       <button
-        class="cursor-pointer rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300 focus-visible:bg-zinc-300"
+        class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         aria-label="Toggle menu visibility"
         on:click={toggleMenu}
       >
@@ -47,16 +47,16 @@
           icon={$isMenuOpened ? 'lucide:eye-off' : 'lucide:eye'}
           width="20"
           height="20"
-          style="color: #18181b"
+          style="color: var(--color-gray-900)"
         ></iconify-icon>
       </button>
       <button
         id="btn-particles-settings"
-        class="cursor-pointer rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300 focus-visible:bg-zinc-300"
+        class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         aria-label="Toggle particles settings"
         on:click={toggleParticleSettings}
       >
-        <iconify-icon icon="lucide:settings-2" width="20" height="20" style="color: #18181b"
+        <iconify-icon icon="lucide:settings-2" width="20" height="20" style="color: var(--color-zinc-900)"
         ></iconify-icon>
       </button>
       <div
