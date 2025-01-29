@@ -2,7 +2,7 @@ import { bubbleSort } from './sorting.utils';
 import type { SortingOrder, SortingFunction, SortingStatus } from './sorting.types';
 
 export class SortingSettingsState {
-  size = $state(0);
+  size = $state(10);
   delay = $state(100);
   isPlaying = $state(false);
   order = $state<SortingOrder>('Random');
