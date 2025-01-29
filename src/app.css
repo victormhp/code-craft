@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 @font-face {
   font-family: 'Virgil';
@@ -18,31 +16,36 @@
     url('/fonts/roboto.woff') format('woff');
 }
 
-* {
-  min-width: 0;
-  font: inherit;
+@theme {
+  --font-virgil: 'Virgil', Arial, sans-serif;
+  --font-orange: 'Cartoon', Arial, sans-serif;
+  --font-roboto: 'Roboto', Arial, sans-serif;
 }
 
+@layer base {
+  body {
+    width: 100%;
+    min-height: 100dvh;
+    background-color: var(--color-gray-50);
+    font-family: 'Roboto';
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
 
-body {
-  min-height: 100dvh;
-  background-color: #fafafa;
-  font-family: 'Roboto';
-  display: grid;
-  grid-template-rows: auto 1fr;
-}
+  iconify-icon {
+    display: block;
+    color: var(--color-gray-800);
+  }
 
-iconify-icon {
-  display: block;
-  color: #27272a;
-}
+  input {
+    accent-color: var(--color-gray-800);
+  }
 
-input {
-  accent-color: #27272a;
-}
-
-button:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-  cursor: not-allowed;
+  input:disabled,
+  select:disabled,
+  button:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }
