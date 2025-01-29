@@ -1,13 +1,19 @@
 <script lang="ts">
-  import { sortingColors } from './sorting.store';
-  import type { RectStatus } from './sorting.types';
+  import { rectSettings } from './sorting.svelte';
+  import type { SortingStatus } from './sorting.types';
 
-  export let width = 0;
-  export let height = 0;
-  export let status: RectStatus = 'unordered';
+  type RectProps = {
+    width: number;
+    height: number;
+    status: SortingStatus;
+  };
+
+  let { width, height, status }: RectProps = $props();
+
+  const color = $derived(rectSettings.getColor(status));
 </script>
 
 <div
   class="relative flex origin-bottom items-center justify-center rounded-t-md border border-zinc-50"
-  style="width: {width}px; height: {height}px; background-color: {$sortingColors[status]};"
-/>
+  style="width: {width}px; height: {height}px; background-color: {color};"
+></div>

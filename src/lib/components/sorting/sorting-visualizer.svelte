@@ -1,51 +1,65 @@
 <script lang="ts">
   import 'iconify-icon';
-  import {
-    sortingOrder,
-    sortingSize,
-    sortingDelay,
-    sortingAlgorithm,
-    sortingIsPlaying,
-    sortingProgress,
-    canStep,
-    canStepBack
-  } from './sorting.store';
   import { generateRandomArray } from '$lib/utils';
   import { Progress } from '$lib/components/ui';
   import Rect from './rect.svelte';
+  import { sortingSettings, sortingProgress } from './sorting.svelte';
 
   let frame: number;
   let timeout: number;
-  let rectsContainerWidth = 0;
-  let rectsContainerHeight = 0;
-  let rectHeights: number[] = [];
+  let rectsContainerWidth = $state(0);
+  let rectsContainerHeight = $state(0);
+  let rectWidth = $derived(rectsContainerWidth / sortingSettings.size);
+  let rectMaxHeight = $derived(rectsContainerHeight - 100);
 
-  let rectMinHeight = 20;
-  $: rectMaxHeight = rectsContainerHeight - 100;
-  $: rectWidth = rectsContainerWidth / $sortingSize;
-
-  $: {
-    rectHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
-    if ($sortingOrder === 'Reverse') {
+  let rectHeights = $derived.by(() => {
+    let rectHeights = generateRandomArray(sortingSettings.size, 20, rectMaxHeight);
+    if (sortingSettings.order === 'Reverse') {
       rectHeights.sort((a, b) => b - a);
+    }
+    return rectHeights;
+  });
+
+  let { values, statuses } = $derived(sortingSettings.algorithm([...rectHeights]));
+
+  $effect(() => {
+    sortingProgress.total = values.length;
+  });
+
+  let currentValues = $derived(values[sortingProgress.current]);
+  let currentStatuses = $derived(statuses[sortingProgress.current]);
+
+  const canStep = $derived.by(() => {
+    return sortingProgress.current < sortingProgress.total - 1;
+  });
+
+  const canStepBack = $derived.by(() => {
+    return sortingProgress.current > 0;
+  });
+
+  function play() {
+    if (!canStep) return;
+
+    if (sortingSettings.isPlaying) {
+      sortingSettings.isPlaying = false;
+      clearTimeout(timeout);
+      cancelAnimationFrame(frame);
+    } else {
+      sortingSettings.isPlaying = true;
+      animate();
     }
   }
 
-  $: ({ rectValues, rectStatuses } = $sortingAlgorithm([...rectHeights]));
-  $: $sortingProgress.total = rectValues.length;
-  $: currentState = rectValues[$sortingProgress.current];
-  $: currentStatus = rectStatuses[$sortingProgress.current];
-
   function animate() {
-    if ($sortingIsPlaying && !$canStep) {
-      $sortingIsPlaying = false;
+    if (sortingSettings.isPlaying && !canStep) {
+      sortingSettings.isPlaying = false;
     }
 
-    if ($sortingIsPlaying && $canStep) {
+    if (sortingSettings.isPlaying && canStep) {
       timeout = setTimeout(() => {
         frame = requestAnimationFrame(animate);
         sortingProgress.step();
-      }, $sortingDelay);
+      }, sortingSettings.delay);
 
       return () => {
         clearTimeout(timeout);
@@ -54,16 +68,69 @@
     }
   }
 
-  function play() {
-    if ($sortingIsPlaying) {
-      $sortingIsPlaying = false;
-      clearTimeout(timeout);
-      cancelAnimationFrame(frame);
-    } else {
-      $sortingIsPlaying = true;
-      animate();
+  function stepBack() {
+    if (canStepBack) {
+      sortingProgress.stepBack();
     }
   }
+
+  function step() {
+    if (canStep) {
+      sortingProgress.step();
+    }
+  }
+
+  function randomize() {
+    if (sortingSettings.isPlaying || sortingProgress.current > 0) return;
+
+    sortingProgress.reset();
+    sortingSettings.isPlaying = false;
+
+    // This forces to recalculate rectHeights, someday i'll fine a better way to do this xd
+    sortingSettings.size++;
+    sortingSettings.size--;
+  }
+
+  function restart() {
+    if (sortingSettings.isPlaying || sortingProgress.current < 1) return;
+
+    cancelAnimationFrame(frame);
+    sortingProgress.reset();
+    sortingSettings.isPlaying = false;
+  }
+
+  const mediaButtons = $derived([
+    {
+      label: 'Randomize',
+      icon: 'mingcute:shuffle-2-line',
+      action: randomize,
+      disabled: sortingSettings.isPlaying || sortingProgress.current > 0
+    },
+    {
+      label: 'Previous Step',
+      icon: 'mingcute:skip-previous-fill',
+      action: stepBack,
+      disabled: sortingSettings.isPlaying || !canStepBack
+    },
+    {
+      label: 'Play/Pause',
+      icon: sortingSettings.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill',
+      action: play,
+      disabled: !canStep
+    },
+    {
+      label: 'Next Step',
+      icon: 'mingcute:skip-forward-fill',
+      action: step,
+      disabled: sortingSettings.isPlaying || !canStep
+    },
+    {
+      label: 'Restart',
+      icon: 'mingcute:refresh-3-line',
+      action: restart,
+      disabled: sortingSettings.isPlaying || sortingProgress.current < 1
+    }
+  ]);
 
   function keysControls(event: KeyboardEvent) {
     switch (event.key) {
@@ -71,87 +138,49 @@
         play();
         break;
       case 'ArrowLeft':
-        if ($sortingProgress.current > 0 && canStepBack) {
-          sortingProgress.stepBack();
+        if (!sortingSettings.isPlaying) {
+          stepBack();
         }
         break;
       case 'ArrowRight':
-        if ($sortingProgress.current + 1 < $sortingProgress.total && canStep) {
-          sortingProgress.step();
+        if (!sortingSettings.isPlaying) {
+          step();
         }
         break;
       default:
         break;
     }
   }
-
-  function randomize() {
-    sortingProgress.reset();
-    $sortingIsPlaying = false;
-    rectHeights = generateRandomArray($sortingSize, rectMinHeight, rectMaxHeight);
-  }
-
-  function restart() {
-    cancelAnimationFrame(frame);
-    sortingProgress.reset();
-    $sortingIsPlaying = false;
-  }
-
-  $: mediaButtons = [
-    {
-      icon: 'mingcute:shuffle-2-line',
-      action: randomize,
-      disabled: $sortingIsPlaying || ($canStep && $canStepBack)
-    },
-    {
-      icon: 'mingcute:skip-previous-fill',
-      action: sortingProgress.stepBack,
-      disabled: $sortingIsPlaying || !canStepBack
-    },
-    {
-      icon: $sortingIsPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill',
-      action: play,
-      disabled: !$canStep
-    },
-    {
-      icon: 'mingcute:skip-forward-fill',
-      action: sortingProgress.step,
-      disabled: $sortingIsPlaying || !canStep
-    },
-    {
-      icon: 'mingcute:refresh-3-line',
-      action: restart,
-      disabled: $sortingIsPlaying || $sortingProgress.current < 1
-    }
-  ];
 </script>
 
 <svelte:window on:keydown={keysControls} />
 
-<div class="grid grid-rows-[1fr,auto] gap-4">
+<div class="grid grid-rows-[1fr_auto] gap-4">
   <div
     bind:clientWidth={rectsContainerWidth}
     bind:clientHeight={rectsContainerHeight}
-    class="mb-4 flex items-end justify-center rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
+    class="mb-4 flex max-w-full items-end justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
   >
-    {#each currentState as rectHeight, i}
-      <Rect width={rectWidth} height={rectHeight} status={currentStatus[i]} />
+    {#each currentValues as rectHeight, i}
+      <Rect width={rectWidth} height={rectHeight} status={currentStatuses[i]} />
     {/each}
   </div>
   <div class="space-y-4">
-    <Progress max={$sortingProgress.total - 1} value={$sortingProgress.current} />
+    <Progress max={sortingProgress.total - 1} value={sortingProgress.current} />
     <div
       id="media"
       class="flex justify-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
     >
-      {#each mediaButtons as { icon, action, disabled }}
+      {#each mediaButtons as { label, icon, action, disabled }}
         <button
-          class="rounded border bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
+          class="rounded border border-zinc-200 bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
           type="button"
-          on:click={action}
+          onclick={action}
+          aria-label={label}
           {disabled}
         >
-          <iconify-icon {icon} width="20" height="20" style="color: #27272a"></iconify-icon>
+          <iconify-icon {icon} width="20" height="20" style="color: var(--color-zinc-800)"
+          ></iconify-icon>
         </button>
       {/each}
     </div>

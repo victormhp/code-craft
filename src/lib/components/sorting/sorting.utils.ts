@@ -1,5 +1,5 @@
 import { rangeArray } from '$lib/utils';
-import type { SortingHistory, RectStatus } from './sorting.types';
+import type { SortingHistory, SortingStatus } from './sorting.types';
 
 function swap<T>(arr: T[], a: number, b: number) {
   const temp = arr[a];
@@ -7,16 +7,16 @@ function swap<T>(arr: T[], a: number, b: number) {
   arr[b] = temp;
 }
 
-function recordStep(history: SortingHistory, nums: number[], statuses: RectStatus[]) {
-  history.rectValues.push([...nums]);
-  history.rectStatuses.push([...statuses]);
+function recordStep(history: SortingHistory, nums: number[], statuses: SortingStatus[]) {
+  history.values.push([...nums]);
+  history.statuses.push([...statuses]);
 }
 
 export function bubbleSort(nums: number[]): SortingHistory {
-  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
+  const history: SortingHistory = { values: [], statuses: [] };
   let swapped: boolean;
 
-  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  const statuses: SortingStatus[] = Array(nums.length).fill('unordered');
   recordStep(history, nums, statuses);
 
   for (let i = 0; i < nums.length - 1; i++) {
@@ -45,9 +45,9 @@ export function bubbleSort(nums: number[]): SortingHistory {
 }
 
 export function insertionSort(nums: number[]): SortingHistory {
-  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
+  const history: SortingHistory = { values: [], statuses: [] };
 
-  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  const statuses: SortingStatus[] = Array(nums.length).fill('unordered');
   recordStep(history, nums, statuses);
 
   for (let i = 1; i < nums.length; i++) {
@@ -73,9 +73,9 @@ export function insertionSort(nums: number[]): SortingHistory {
 }
 
 export function selectionSort(nums: number[]): SortingHistory {
-  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
+  const history: SortingHistory = { values: [], statuses: [] };
 
-  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  const statuses: SortingStatus[] = Array(nums.length).fill('unordered');
   recordStep(history, nums, statuses);
 
   for (let i = 0; i < nums.length; i++) {
@@ -105,9 +105,9 @@ export function selectionSort(nums: number[]): SortingHistory {
 }
 
 export function mergeSort(nums: number[]): SortingHistory {
-  const history: SortingHistory = { rectValues: [], rectStatuses: [] };
+  const history: SortingHistory = { values: [], statuses: [] };
 
-  const statuses: RectStatus[] = Array(nums.length).fill('unordered');
+  const statuses: SortingStatus[] = Array(nums.length).fill('unordered');
   recordStep(history, nums, statuses);
 
   mergeS(nums, 0, nums.length - 1, history, statuses);
@@ -121,7 +121,7 @@ function mergeS(
   l: number,
   r: number,
   history: SortingHistory,
-  statuses: RectStatus[]
+  statuses: SortingStatus[]
 ) {
   if (l >= r) return;
 
