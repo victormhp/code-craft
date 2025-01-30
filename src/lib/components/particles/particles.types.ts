@@ -1,8 +1,4 @@
-export type ParticlesSettings = {
-  color: string;
-  stroke: string;
-  effect: 'physics' | 'sunrays' | 'none';
-};
+export type ParticleEffects = 'physics' | 'sunrays' | 'none';
 
 export type Mouse = {
   x: number;

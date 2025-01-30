@@ -1,4 +1,6 @@
-import type { ParticlesSettings, Mouse } from './particles.types';
+import type { Action } from 'svelte/action';
+import type { Mouse } from './particles.types';
+import { ParticleState } from './particles.svelte';
 
 export class Particle {
   radius: number;
@@ -89,7 +91,7 @@ export class Effect {
   constructor(
     public canvas: HTMLCanvasElement,
     public context: CanvasRenderingContext2D,
-    public settings: ParticlesSettings
+    public settings: ParticleState
   ) {
     this.width = this.canvas.width;
     this.height = this.canvas.height;
@@ -145,8 +147,12 @@ export class Effect {
     this.particles.forEach((particle) => {
       particle.draw(context);
       particle.update();
+
+      context.fillStyle = this.settings.color
+      context.strokeStyle = this.settings.stroke
     });
   }
+
   drawLine(
     context: CanvasRenderingContext2D,
     x1: number,
@@ -220,7 +226,12 @@ export class Effect {
   }
 }
 
-export function particlesAction(canvas: HTMLCanvasElement, settings: ParticlesSettings) {
+type ParticlesAction = Action<HTMLCanvasElement, ParticleState>;
+
+export const particlesAction: ParticlesAction = (
+  canvas: HTMLCanvasElement,
+  settings: ParticleState
+) => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
@@ -240,13 +251,8 @@ export function particlesAction(canvas: HTMLCanvasElement, settings: ParticlesSe
   animate();
 
   return {
-    update(settings: ParticlesSettings) {
-      context.fillStyle = settings.color;
-      context.strokeStyle = settings.stroke;
-      effect.settings.effect = settings.effect;
-    },
     destroy() {
       cancelAnimationFrame(frame);
     }
   };
-}
+};

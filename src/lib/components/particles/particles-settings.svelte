@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { particlesSettings } from './particles.store';
+  import { particles } from './particles.svelte';
 
   const effects = [
     { name: 'none', label: 'None' },
@@ -19,7 +19,7 @@
           class="flex-grow rounded-md bg-zinc-50"
           name="color"
           type="color"
-          bind:value={$particlesSettings.stroke}
+          bind:value={particles.stroke}
         />
       </div>
       <div class="flex justify-between gap-4">
@@ -29,7 +29,7 @@
           class="flex-grow rounded-md bg-zinc-50"
           name="color"
           type="color"
-          bind:value={$particlesSettings.color}
+          bind:value={particles.color}
         />
       </div>
     </div>
@@ -40,7 +40,7 @@
       {#each effects as effect}
         <div class="flex gap-2">
           <input
-            bind:group={$particlesSettings.effect}
+            bind:group={particles.effect}
             type="radio"
             name={effect.name}
             value={effect.name}
@@ -52,7 +52,7 @@
   </div>
   <button
     class="rounded-lg bg-zinc-900 px-4 py-2 font-bold text-zinc-50 hover:bg-zinc-800"
-    onclick={particlesSettings.reset}
+    onclick={particles.reset}
   >
     Reset
   </button>
