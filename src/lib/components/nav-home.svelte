@@ -2,12 +2,12 @@
   import 'iconify-icon';
   import { ParticlesSettings } from '$lib/components/particles';
   import { clickOutside } from '$lib/utils';
-  import { isMenuOpened } from '$lib/store';
+  import { appSettings } from '$lib/store.svelte';
 
   let isClosed = true;
   const closeParticleSettings = () => (isClosed = true);
   const toggleParticleSettings = () => (isClosed = !isClosed);
-  const toggleMenu = () => isMenuOpened.update((state) => !state);
+  const toggleMenu = () => appSettings.isMenuOpened = !appSettings.isMenuOpened;
 </script>
 
 <header class="z-50 w-full bg-transparent px-4 py-3 lg:px-16 lg:py-6">
@@ -41,10 +41,10 @@
       <button
         class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         aria-label="Toggle menu visibility"
-        on:click={toggleMenu}
+        onclick={toggleMenu}
       >
         <iconify-icon
-          icon={$isMenuOpened ? 'lucide:eye-off' : 'lucide:eye'}
+          icon={appSettings.isMenuOpened ? 'lucide:eye-off' : 'lucide:eye'}
           width="20"
           height="20"
           style="color: var(--color-gray-900)"
@@ -54,14 +54,14 @@
         id="btn-particles-settings"
         class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         aria-label="Toggle particles settings"
-        on:click={toggleParticleSettings}
+        onclick={toggleParticleSettings}
       >
         <iconify-icon icon="lucide:settings-2" width="20" height="20" style="color: var(--color-zinc-900)"
         ></iconify-icon>
       </button>
       <div
         aria-hidden={isClosed}
-        on:outside={closeParticleSettings}
+        onoutside={closeParticleSettings}
         use:clickOutside={{ ignore: 'btn-particles-settings' }}
         class="absolute top-12 right-0 z-50 w-[300px] aria-hidden:hidden"
       >

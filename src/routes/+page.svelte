@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Particles } from '$lib/components/particles';
   import { NavHome } from '$lib/components';
-  import { isMenuOpened } from '$lib/store';
+  import { appSettings } from '$lib/store.svelte';
   import { fade } from 'svelte/transition';
 
   const routes = [
@@ -18,7 +18,7 @@
 <Particles />
 <NavHome />
 <main class="mx-auto flex w-[min(80rem,100%-4rem)] items-center justify-center py-8">
-  {#if $isMenuOpened}
+  {#if appSettings.isMenuOpened}
     <section
       in:fade={{ duration: 200 }}
       out:fade={{ duration: 200 }}

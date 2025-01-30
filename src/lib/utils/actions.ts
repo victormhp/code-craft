@@ -3,13 +3,10 @@ import type { Action } from 'svelte/action';
 type ClickOutsideAction = Action<
   HTMLElement,
   { ignore: string },
-  { 'on:outside'?: (e: CustomEvent) => void }
+  { onoutside?: (e: CustomEvent) => void }
 >;
 
-export const clickOutside: ClickOutsideAction = (
-  element: HTMLElement,
-  options: { ignore: string }
-) => {
+export const clickOutside: ClickOutsideAction = (element, options) => {
   const handleClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     const ignore = document.getElementById(options.ignore);
@@ -32,11 +29,11 @@ export const clickOutside: ClickOutsideAction = (
 
 interface DraggableProps {
   data: string;
-  isDraggable: boolean;
 }
 
 type DraggableAction = Action<HTMLElement, DraggableProps>;
-export const draggable: DraggableAction = (element: HTMLElement, options: DraggableProps) => {
+
+export const draggable: DraggableAction = (element, options) => {
   let state = { ...options };
 
   const handleDragStart = (event: DragEvent) => {
@@ -45,11 +42,9 @@ export const draggable: DraggableAction = (element: HTMLElement, options: Dragga
   };
 
   const updateDraggable = () => {
-    if (state.isDraggable) {
-      element.draggable = true;
-      element.style.cursor = 'grab';
-      element.addEventListener('dragstart', handleDragStart);
-    }
+    element.draggable = true;
+    element.style.cursor = 'grab';
+    element.addEventListener('dragstart', handleDragStart);
   };
 
   updateDraggable();
@@ -70,17 +65,10 @@ interface DropzoneProps {
   dragoverClass: string;
 }
 
-type DropzoneAction = Action<
-  HTMLElement,
-  DropzoneProps,
-  { 'on:dropzone'?: (e: CustomEvent) => void }
->;
+type DropzoneAction = Action<HTMLElement, DropzoneProps, { ondropzone?: (e: CustomEvent) => void }>;
 
-export const dropzone: DropzoneAction = (element: HTMLElement) => {
-  const state: DropzoneProps = {
-    dragoverClass: 'droppable',
-    dropEffect: 'move'
-  };
+export const dropzone: DropzoneAction = (element, options) => {
+  const state = { ...options };
 
   const handleDragEnter = (event: DragEvent) => {
     event.preventDefault();
