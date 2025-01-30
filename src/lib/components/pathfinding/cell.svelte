@@ -1,72 +1,91 @@
 <script lang="ts">
   import { draggable, dropzone } from '$lib/utils';
-  import { grid, gridStart, gridFinish } from './pathfinding.store';
+  import { grid } from './pathfinding.svelte';
 
-  export let x: number;
-  export let y: number;
-  export let mousePressed = false;
-  export let width = 25;
-  export let height = 25;
+  type CellProps = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    mousePressed: boolean;
+  };
 
-  $: isWall = $grid[y][x].state === 'wall';
-  $: isStart = x === $gridStart.x && y === $gridStart.y;
-  $: isFinish = x === $gridFinish.x && y === $gridFinish.y;
-  $: isDraggable = isStart || isFinish;
+  let { x, y, width = 25, height = 25, mousePressed = $bindable() }: CellProps = $props();
+
+  grid.start.x = 2
+  grid.start.y = 2
+  grid.target.x = grid.getCols() - 3;
+  grid.target.y = grid.getRows() - 3;
+
+  let isWall = $derived(grid.cells[y][x].state === 'wall');
+  let isStart = $derived(x === grid.start.x && y === grid.start.y);
+  let isTarget = $derived(x === grid.target.x && y === grid.target.y);
+  let isDraggable = $derived(isStart || isTarget);
 
   function visitNode(event: MouseEvent) {
+    event.preventDefault();
+
     const mouseButton = event.buttons;
     if (mousePressed) {
       if (mouseButton == 1) {
         // Add wall with left click
-        grid.updateState(x, y, 'wall');
+        grid.updateCell(x, y, 'wall');
       } else if (mouseButton == 2) {
         // Remove wall with right click
-        grid.updateState(x, y, 'empty');
+        grid.updateCell(x, y, 'empty');
       }
     }
   }
 
   function toggleNode(event: MouseEvent) {
+    event.preventDefault();
+
     const mouseButton = event.buttons;
     if (mouseButton == 1) {
       // Add wall with left click
-      grid.updateState(x, y, 'wall');
+      grid.updateCell(x, y, 'wall');
     } else if (mouseButton == 2) {
       // Remove wall with right click
-      grid.updateState(x, y, 'empty');
+      grid.updateCell(x, y, 'empty');
     }
   }
 
   function dropNode(event: CustomEvent) {
+    event.preventDefault();
+
     let [destX, destY] = event.detail.data.split('-');
     destX = Number(destX);
     destY = Number(destY);
 
-    if (destX === $gridStart.x && destY === $gridStart.y) {
-      grid.updateState(x, y, 'start');
-    } else if (destX === $gridFinish.x && destY === $gridFinish.y) {
-      grid.updateState(x, y, 'finish');
+    if (destX === grid.start.x && destY === grid.start.y) {
+      grid.start.x = x;
+      grid.start.y = y;
+      grid.start.state = 'start';
+    } else if (destX === grid.target.x && destY === grid.target.y) {
+      grid.target.x = x;
+      grid.target.y = y;
+      grid.target.state = 'target';
     }
-    grid.updateState(destX, destY, 'empty');
+    grid.updateCell(destX, destY, 'empty');
   }
 </script>
 
 {#if isDraggable}
   <td
-    use:draggable={{ data: `${x}-${y}`, isDraggable }}
+    use:draggable={{ data: `${x}-${y}` }}
     class="border border-zinc-200 select-none hover:opacity-80"
     class:node-start={isStart}
-    class:node-finish={isFinish}
+    class:node-finish={isTarget}
     style="width: {width}px; height: {height}px;"
   ></td>
 {:else}
   <td
-    use:dropzone
-    on:dropzone={dropNode}
-    on:mouseenter|preventDefault={visitNode}
-    on:mousedown|preventDefault={toggleNode}
-    on:contextmenu|preventDefault
-    class="border border-zinc-200 bg-zinc-100 select-none hover:opacity-80"
+    use:dropzone={{ dropEffect: 'move', dragoverClass: 'droppable' }}
+    ondropzone={dropNode}
+    onmouseenter={visitNode}
+    onmousedown={toggleNode}
+    oncontextmenu={(event) => event.preventDefault()}
+    class="max-w-full overflow-hidden border border-zinc-200 bg-zinc-100 select-none hover:opacity-80"
     class:node-wall={isWall}
     style="width: {width}px; height: {height}px;"
   ></td>
@@ -74,20 +93,20 @@
 
 <style>
   :global(.droppable) {
-    outline: 1px solid #27272a;
+    outline: 1px solid var(--color-gray-800);
     outline-offset: 0.1rem;
   }
 
   .node-start {
-    background-color: #10b981;
+    background-color: var(--color-emerald-500);
   }
 
   .node-finish {
-    background-color: #ef4444;
+    background-color: var(--color-red-500);
   }
 
   .node-wall {
-    background-color: #27272a;
+    background-color: var(--color-gray-800);
     animation-name: wall-animation;
     animation-duration: 0.15s;
     animation-timing-function: ease-out;

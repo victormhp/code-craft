@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { grid } from './pathfinding.store';
+  import { grid } from './pathfinding.svelte';
 
   const pathfindingAlgorithms = ['Dijkstra', 'A Star', 'Breath First Search', 'Depth First Search'];
 
   const pathfindingMazes = [
-    { name: '-', action: grid.clearBoard },
-    { name: 'Recursive Maze', action: () => grid.createMaze($grid, 0, 0) }
+    { name: '-', action: grid.clearBoard }
+    // { name: 'Recursive Maze', action: () => grid.createMaze($grid, 0, 0) }
   ];
   let selectedMaze = pathfindingMazes[0];
 
@@ -37,7 +37,7 @@
         id="maze"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
         bind:value={selectedMaze}
-        on:change={selectedMaze.action}
+        onchange={selectedMaze.action}
       >
         {#each pathfindingMazes as maze}
           <option value={maze}>{maze.name}</option>
@@ -51,7 +51,7 @@
       <button
         class="rounded border bg-zinc-200 px-4 py-2 text-xs transition-colors hover:bg-zinc-300 sm:text-base"
         type="button"
-        on:click={action}
+        onclick={action}
       >
         <p class="font-bold">{name}</p>
       </button>
@@ -62,8 +62,13 @@
     <button
       class="rounded-full border bg-zinc-800 p-2 transition-colors hover:bg-zinc-700 focus-visible:bg-zinc-700"
       type="button"
+      aria-label="Play find path"
     >
-      <iconify-icon icon="mingcute:play-fill" width="20" height="20" style="color: #fafafa"
+      <iconify-icon
+        icon="mingcute:play-fill"
+        width="20"
+        height="20"
+        style="color: var(--color-gray-50)"
       ></iconify-icon>
     </button>
   </div>

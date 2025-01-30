@@ -1,49 +1,48 @@
 <script lang="ts">
   import 'iconify-icon';
+  import { grid } from './pathfinding.svelte';
   import type { Grid, GridCell } from './pathfinding.types';
-  import { grid } from './pathfinding.store';
   import Cell from './cell.svelte';
 
-  let mousePressed = false;
-  let cellSize = 25;
-  let gridWidth: number;
-  let gridHeight: number;
+  let mousePressed = $state(false);
+  let cellSize = $state(25);
+  let gridHeight = $state(0);
+  let gridWidth = $state(0);
 
-  $: rows = Math.floor(gridHeight / cellSize);
-  $: cols = Math.floor(gridWidth / cellSize);
+  let rows = $derived(Math.floor(gridHeight / cellSize));
+  let cols = $derived(Math.floor(gridWidth / cellSize));
+  let xValues = $derived(Array.from({ length: cols }, (_, i) => i));
+  let yValues = $derived(Array.from({ length: rows }, (_, i) => i));
 
-  $: xValues = Array.from({ length: cols }, (_, i) => i);
-  $: yValues = Array.from({ length: rows }, (_, i) => i);
-
-  $: {
+  $effect(() => {
     const newGrid: Grid = Array.from({ length: rows }, () => []);
+
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
-        const node: GridCell = { coordinates: { x, y }, state: 'empty' };
+        const node: GridCell = { x, y, state: 'empty' };
         newGrid[y].push(node);
       }
     }
 
-    $grid = newGrid;
-  }
+    grid.cells = newGrid;
+  });
 
   const press = () => (mousePressed = true);
   const release = () => (mousePressed = false);
 </script>
 
-<svelte:body
-  on:mousedown={press}
-  on:mouseup={release}
-  on:dragstart={press}
-  on:dragleave={release}
-/>
+<svelte:body onmousedown={press} onmouseup={release} ondragstart={press} ondragleave={release} />
 
-<table bind:clientWidth={gridWidth} bind:clientHeight={gridHeight} class="border-collapse">
+<table
+  bind:clientWidth={gridWidth}
+  bind:clientHeight={gridHeight}
+  class="max-w-full border-collapse overflow-hidden"
+>
   <tbody>
     {#each yValues as y (y)}
       <tr class="table-row">
         {#each xValues as x (x)}
-          <Cell {x} {y} bind:mousePressed width={cellSize} height={cellSize} />
+          <Cell {x} {y} width={cellSize} height={cellSize} bind:mousePressed />
         {/each}
       </tr>
     {/each}

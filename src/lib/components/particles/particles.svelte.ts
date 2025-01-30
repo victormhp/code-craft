@@ -1,4 +1,4 @@
-import type { ParticleEffects } from "./particles.types";
+import type { ParticleEffects } from './particles.types';
 
 const WHITE = '#ffffff';
 const GRAY = '#bababa';
@@ -8,13 +8,13 @@ export class ParticleState {
   stroke = $state(GRAY);
   effect = $state<ParticleEffects>('none');
 
-  constructor() {}
+  constructor() { }
 
   reset = () => {
     this.color = WHITE;
     this.stroke = GRAY;
     this.effect = 'none';
-  }
+  };
 }
 
 export const particles = new ParticleState();

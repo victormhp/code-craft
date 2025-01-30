@@ -3,7 +3,7 @@ export interface CellColors {
   wall: string;
   path: string;
   start: string;
-  finish: string;
+  target: string;
 }
 
 export type CellState = keyof CellColors;
@@ -14,7 +14,8 @@ export interface Coordinates {
 }
 
 export interface GridCell {
-  coordinates: Coordinates;
+  x: number;
+  y: number;
   state: CellState;
 }
 
