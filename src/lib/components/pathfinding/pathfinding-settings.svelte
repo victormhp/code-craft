@@ -49,7 +49,7 @@
   <div class="grid auto-cols-fr grid-flow-col gap-4">
     {#each clearButtons as { name, action }}
       <button
-        class="rounded border bg-zinc-200 px-4 py-2 text-xs transition-colors hover:bg-zinc-300 sm:text-base"
+        class="rounded border border-transparent bg-zinc-200 px-4 py-2 text-xs transition-colors hover:bg-zinc-300 sm:text-base"
         type="button"
         onclick={action}
       >
