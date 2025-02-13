@@ -1,7 +1,7 @@
 <script lang="ts">
   import 'iconify-icon';
   import { generateRandomArray } from '$lib/utils';
-  import { Progress } from '$lib/components/ui';
+  import { Progress, PressableButton } from '$lib/components/ui';
   import Rect from './rect.svelte';
   import { sortingSettings, sortingProgress } from './sorting.svelte';
 
@@ -10,7 +10,7 @@
   let rectsContainerWidth = $state(0);
   let rectsContainerHeight = $state(0);
   let rectWidth = $derived(rectsContainerWidth / sortingSettings.size);
-  let rectMaxHeight = $derived(rectsContainerHeight - 100);
+  let rectMaxHeight = $derived(rectsContainerHeight - 50);
 
   let rectHeights = $derived.by(() => {
     let rectHeights = generateRandomArray(sortingSettings.size, 20, rectMaxHeight);
@@ -151,15 +151,19 @@
         break;
     }
   }
+
+  $effect(() => {
+    console.log('Container height:', rectsContainerHeight);
+  });
 </script>
 
 <svelte:window on:keydown={keysControls} />
 
-<div class="grid grid-rows-[1fr_auto] gap-4">
+<div class=" grid grid-rows-[1fr_auto] gap-4">
   <div
     bind:clientWidth={rectsContainerWidth}
     bind:clientHeight={rectsContainerHeight}
-    class="mb-4 flex max-w-full items-end justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
+    class="mb-4 flex min-h-[400px] max-w-full items-end justify-center overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
   >
     {#each currentValues as rectHeight, i}
       <Rect width={rectWidth} height={rectHeight} status={currentStatuses[i]} />
@@ -168,31 +172,56 @@
   <div class="space-y-4">
     <Progress max={sortingProgress.total - 1} value={sortingProgress.current} />
     <div
-      id="media"
-      class="flex justify-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-2 shadow-sm"
+      class="media flex justify-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
     >
       {#each mediaButtons as { label, icon, action, disabled }}
-        <button
-          class="rounded border border-zinc-200 bg-zinc-200 px-4 py-2 transition-colors hover:bg-zinc-300"
-          type="button"
-          onclick={action}
-          aria-label={label}
-          {disabled}
-        >
-          <iconify-icon {icon} width="20" height="20" style="color: var(--color-zinc-800)"
-          ></iconify-icon>
-        </button>
+        <div>
+          <PressableButton {label} {action} {disabled}>
+            <iconify-icon {icon} width="20" height="20" style="color: var(--color-zinc-800)"
+            ></iconify-icon>
+          </PressableButton>
+        </div>
       {/each}
     </div>
   </div>
 </div>
 
 <style>
-  #media button:first-child {
+  .media div:first-child {
     margin-right: auto;
   }
 
-  #media button:last-child {
+  .media div:last-child {
     margin-left: auto;
+  }
+
+  @media (width <= 40rem) {
+    .media {
+      display: grid;
+      grid-template-rows: repeat(2, auto);
+      justify-items: center;
+      align-items: center;
+      grid-auto-columns: auto;
+    }
+
+    .media div:first-child {
+      grid-row: 2;
+    }
+
+    .media div:last-child {
+      grid-row: 2;
+    }
+
+    .media div:nth-child(2) {
+      grid-row: 1;
+    }
+
+    .media div:nth-child(3) {
+      grid-row: 1;
+    }
+
+    .media div:nth-child(4) {
+      grid-row: 1;
+    }
   }
 </style>

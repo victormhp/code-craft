@@ -7,7 +7,7 @@
   const routes = [
     { title: 'Sorting Algorithms', img: './sorting.png', path: '/sorting' },
     { title: 'Pathfinding Algorithms', img: './pathfinding.png', path: '/pathfinding' },
-    { title: 'Tower of Hanoi', img: './hanoi.png', path: '/hanoi' }
+    { title: 'Tower of Hanoi', img: './hanoi.png', path: '/' }
   ];
 </script>
 

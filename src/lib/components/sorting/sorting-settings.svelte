@@ -4,14 +4,14 @@
   import { bubbleSort, insertionSort, mergeSort, selectionSort } from './sorting.utils';
 
   const sortingAlgorithms = [
-    { name: 'Bubble Sort', fn: bubbleSort },
-    { name: 'Insertion Sort', fn: insertionSort },
-    { name: 'Selection Sort', fn: selectionSort },
-    { name: 'Merge Sort', fn: mergeSort }
+    { label: 'Bubble Sort', action: bubbleSort },
+    { label: 'Insertion Sort', action: insertionSort },
+    { label: 'Selection Sort', action: selectionSort },
+    { label: 'Merge Sort', action: mergeSort }
   ];
 </script>
 
-<article class="h-full w-full space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
+<div class="h-full w-full space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
   <div class="space-y-5">
     <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Sorting Settings</h2>
     <div class="flex grow flex-col items-start gap-1">
@@ -22,8 +22,8 @@
         class="w-full rounded border border-zinc-200 bg-transparent p-2"
         disabled={sortingProgress.current > 0}
       >
-        {#each sortingAlgorithms as { name, fn }}
-          <option value={fn}>{name}</option>
+        {#each sortingAlgorithms as { label, action }}
+          <option value={action}>{label}</option>
         {/each}
       </select>
     </div>
@@ -88,7 +88,7 @@
         <p class:text-disabled={sortingProgress.current > 0}>{rectSettings.unorderedColor}</p>
         <button
           onclick={rectSettings.resetUnorderedColor}
-          class="ml-auto rounded p-2 transition-colors hover:bg-zinc-200"
+          class="ml-auto rounded bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
           type="button"
           aria-label="Reset unordered rect color"
           disabled={sortingProgress.current > 0}
@@ -97,7 +97,7 @@
             icon="radix-icons:reset"
             width="20"
             height="20"
-            style="color: var(--color-gray-800)"
+            style="color: var(--color-zinc-800)"
           ></iconify-icon>
         </button>
       </div>
@@ -118,7 +118,7 @@
         <p class:text-disabled={sortingProgress.current > 0}>{rectSettings.movingColor}</p>
         <button
           onclick={rectSettings.resetMovingColor}
-          class="ml-auto rounded p-2 transition-colors hover:bg-zinc-200"
+          class="ml-auto rounded bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
           type="button"
           aria-label="Reset moving rect color"
           disabled={sortingProgress.current > 0}
@@ -133,7 +133,7 @@
       </div>
     </div>
   </div>
-</article>
+</div>
 
 <style>
   .text-disabled {

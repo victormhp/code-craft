@@ -51,7 +51,7 @@
     </fieldset>
   </div>
   <button
-    class="rounded-lg bg-zinc-900 px-4 py-2 font-bold text-zinc-50 hover:bg-zinc-800"
+    class="rounded-lg bg-zinc-900 px-4 py-2 font-bold text-zinc-50 hover:bg-zinc-700"
     onclick={particles.reset}
   >
     Reset

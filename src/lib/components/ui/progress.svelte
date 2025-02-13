@@ -1,5 +1,5 @@
 <script lang="ts">
-  type ProgressProps = {
+  interface ProgressProps {
     value: number | undefined;
     min?: number;
     max: number;
