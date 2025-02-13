@@ -102,31 +102,33 @@
   const mediaButtons = $derived([
     {
       label: 'Randomize',
-      icon: 'mingcute:shuffle-2-line',
+      icon: 'material-symbols:shuffle-rounded',
       action: randomize,
       disabled: sortingSettings.isPlaying || sortingProgress.current > 0
     },
     {
       label: 'Previous Step',
-      icon: 'mingcute:skip-previous-fill',
+      icon: 'material-symbols:fast-rewind-rounded',
       action: stepBack,
       disabled: sortingSettings.isPlaying || !canStepBack
     },
     {
       label: 'Play/Pause',
-      icon: sortingSettings.isPlaying ? 'mingcute:pause-fill' : 'mingcute:play-fill',
+      icon: sortingSettings.isPlaying
+        ? 'material-symbols:pause-rounded'
+        : 'material-symbols:play-arrow-rounded',
       action: play,
       disabled: !canStep
     },
     {
       label: 'Next Step',
-      icon: 'mingcute:skip-forward-fill',
+      icon: 'material-symbols:fast-forward-rounded',
       action: step,
       disabled: sortingSettings.isPlaying || !canStep
     },
     {
       label: 'Restart',
-      icon: 'mingcute:refresh-3-line',
+      icon: 'material-symbols:restart-alt-rounded',
       action: restart,
       disabled: sortingSettings.isPlaying || sortingProgress.current < 1
     }
@@ -177,7 +179,7 @@
       {#each mediaButtons as { label, icon, action, disabled }}
         <div>
           <PressableButton {label} {action} {disabled}>
-            <iconify-icon {icon} width="20" height="20" style="color: var(--color-zinc-800)"
+            <iconify-icon {icon} width="24" height="24" style="color: var(--color-zinc-800)"
             ></iconify-icon>
           </PressableButton>
         </div>
