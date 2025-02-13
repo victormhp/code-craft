@@ -1,8 +1,8 @@
 <script lang="ts">
   import { draggable, dropzone } from '$lib/utils';
-  import { grid } from './pathfinding.svelte';
+  import { getGridState } from './pathfinding.svelte';
 
-  type CellProps = {
+  interface CellProps {
     x: number;
     y: number;
     width: number;
@@ -12,12 +12,9 @@
 
   let { x, y, width = 25, height = 25, mousePressed = $bindable() }: CellProps = $props();
 
-  grid.start.x = 2
-  grid.start.y = 2
-  grid.target.x = grid.getCols() - 3;
-  grid.target.y = grid.getRows() - 3;
+  const grid = getGridState();
 
-  let isWall = $derived(grid.cells[y][x].state === 'wall');
+  let isWall = $derived(grid.cells[y]?.[x]?.state === 'wall');
   let isStart = $derived(x === grid.start.x && y === grid.start.y);
   let isTarget = $derived(x === grid.target.x && y === grid.target.y);
   let isDraggable = $derived(isStart || isTarget);
@@ -28,10 +25,8 @@
     const mouseButton = event.buttons;
     if (mousePressed) {
       if (mouseButton == 1) {
-        // Add wall with left click
         grid.updateCell(x, y, 'wall');
       } else if (mouseButton == 2) {
-        // Remove wall with right click
         grid.updateCell(x, y, 'empty');
       }
     }
@@ -42,10 +37,8 @@
 
     const mouseButton = event.buttons;
     if (mouseButton == 1) {
-      // Add wall with left click
       grid.updateCell(x, y, 'wall');
     } else if (mouseButton == 2) {
-      // Remove wall with right click
       grid.updateCell(x, y, 'empty');
     }
   }
@@ -60,11 +53,9 @@
     if (destX === grid.start.x && destY === grid.start.y) {
       grid.start.x = x;
       grid.start.y = y;
-      grid.start.state = 'start';
     } else if (destX === grid.target.x && destY === grid.target.y) {
       grid.target.x = x;
       grid.target.y = y;
-      grid.target.state = 'target';
     }
     grid.updateCell(destX, destY, 'empty');
   }
@@ -93,7 +84,7 @@
 
 <style>
   :global(.droppable) {
-    outline: 1px solid var(--color-gray-800);
+    outline: 1px solid var(--color-zinc-800);
     outline-offset: 0.1rem;
   }
 
@@ -106,7 +97,7 @@
   }
 
   .node-wall {
-    background-color: var(--color-gray-800);
+    background-color: var(--color-zinc-800);
     animation-name: wall-animation;
     animation-duration: 0.15s;
     animation-timing-function: ease-out;
