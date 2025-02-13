@@ -30,7 +30,7 @@
         aria-label="Github Link"
         rel="noopener noreferrer"
       >
-        <iconify-icon icon="bi:github" width="20" height="20" style="color: var(--color-gray-900)"></iconify-icon>
+        <iconify-icon icon="bi:github" width="20" height="20" style="color: var(--color-zinc-900)"></iconify-icon>
       </a>
     </div>
     <a class="homelink flex items-center gap-4" href="/">
@@ -47,7 +47,7 @@
           icon={appSettings.isMenuOpened ? 'lucide:eye-off' : 'lucide:eye'}
           width="20"
           height="20"
-          style="color: var(--color-gray-900)"
+          style="color: var(--color-zinc-900)"
         ></iconify-icon>
       </button>
       <button
