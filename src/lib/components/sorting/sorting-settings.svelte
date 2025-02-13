@@ -94,7 +94,7 @@
           disabled={sortingProgress.current > 0}
         >
           <iconify-icon
-            icon="radix-icons:reset"
+            icon="material-symbols:restart-alt-rounded"
             width="20"
             height="20"
             style="color: var(--color-zinc-800)"
@@ -124,7 +124,7 @@
           disabled={sortingProgress.current > 0}
         >
           <iconify-icon
-            icon="radix-icons:reset"
+            icon="material-symbols:restart-alt-rounded"
             width="20"
             height="20"
             style="color: var(--color-zinc-800)"
