@@ -8,7 +8,7 @@
     width: number;
     height: number;
     mousePressed: boolean;
-  };
+  }
 
   let { x, y, width = 25, height = 25, mousePressed = $bindable() }: CellProps = $props();
 

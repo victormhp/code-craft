@@ -4,9 +4,14 @@
     min?: number;
     max: number;
     labelledby?: string;
-  };
+  }
 
-  let { value = undefined, min = 0, max = 100, labelledby = 'Progress Bar' }: ProgressProps = $props();
+  let {
+    value = undefined,
+    min = 0,
+    max = 100,
+    labelledby = 'Progress Bar'
+  }: ProgressProps = $props();
 
   const fillPercent = $derived(value ? (100 * (value - min)) / (max - min) : 0);
 </script>
