@@ -1,4 +1,8 @@
-export function randomNumber(min: number, max: number) {
+export function randomNumber(max: number) {
+  return Math.floor(Math.random() * max);
+}
+
+export function randomNumberRange(min = 0, max: number) {
   return Math.random() * (max - min) + min;
 }
 

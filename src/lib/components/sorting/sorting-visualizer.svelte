@@ -153,10 +153,6 @@
         break;
     }
   }
-
-  $effect(() => {
-    console.log('Container height:', rectsContainerHeight);
-  });
 </script>
 
 <svelte:window on:keydown={keysControls} />

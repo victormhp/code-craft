@@ -20,7 +20,7 @@
     const newGrid: Grid = Array.from({ length: rows }, () => []);
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
-        newGrid[y].push({ x, y, state: 'empty', visited: false });
+        newGrid[y].push({ x, y, state: 'empty' });
       }
     }
     grid.cells = newGrid;

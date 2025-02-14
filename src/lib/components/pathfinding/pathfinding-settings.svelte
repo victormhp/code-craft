@@ -9,7 +9,7 @@
 
   const mazeAlgorithms = [
     { label: '-', action: grid.clearBoard },
-    { label: 'Randomized Depth First Search', action: grid.generateMaze }
+    { label: 'Recursive Division', action: grid.generateMaze }
   ];
   let currMazeAlgorithm = $state(mazeAlgorithms[0]);
 
