@@ -1,6 +1,12 @@
 import { getContext, setContext } from 'svelte';
-import type { Grid, GridCell, CellState, Orientation } from './pathfinding.types';
-import { randomNumber } from '$lib/utils';
+import type {
+  Grid,
+  GridCell,
+  CellState,
+  MazeAlgorithms,
+  PathfindingAlgorithms
+} from './pathfinding.types';
+import { recursiveDivision } from './pathfinding.utils';
 
 export class GridState {
   cells = $state<Grid>([]);
@@ -27,67 +33,19 @@ export class GridState {
     }
   };
 
-  generateMaze = () => {
+  solveMaze = (algorithm: PathfindingAlgorithms) => { };
+
+  generateMaze = (algorithm: MazeAlgorithms) => {
     this.clearBoard();
     this.walledPerimeter();
-    this.recursiveDivision(0, 0, this.cols, this.rows);
-  };
 
-  recursiveDivision = (startX: number, startY: number, endX: number, endY: number) => {
-    if (endY - startY <= 3 || endX - startX <= 3) return;
-
-    const rows = [];
-    const cols = [];
-
-    const orientation = this.chooseOrientation(endX - startX, endY - startY);
-    if (orientation === 'vertical') {
-      for (let i = startY + 2; i <= endY - 2; i += 2) {
-        rows.push(i);
-      }
-      for (let i = startX + 1; i <= endX - 1; i += 2) {
-        cols.push(i);
-      }
-
-      const wallY = rows[randomNumber(rows.length - 1)];
-      const passageX = cols[randomNumber(cols.length - 1)];
-
-      for (let x = 1; x < endX - startX; x++) {
-        if (x !== passageX - startX) {
-          this.cells[wallY][startX + x].state = 'wall';
-        }
-      }
-      for (let y = 1; y < wallY - wallY; y++) {
-        if (y !== passageX - wallY) {
-          this.cells[wallY + y][startX].state = 'wall';
-        }
-      }
-
-      this.recursiveDivision(startX, startY, endX, wallY);
-      this.recursiveDivision(startX, wallY, endX, endY);
-    } else {
-      for (let i = startX + 2; i <= endX - 2; i += 2) {
-        cols.push(i);
-      }
-      for (let i = startY + 1; i <= endY - 3; i += 2) {
-        rows.push(i);
-      }
-
-      const wallX = cols[randomNumber(cols.length - 1)];
-      const passageY = rows[randomNumber(rows.length - 1)];
-
-      for (let x = 1; x < wallX - wallX; x++) {
-        if (x !== passageY - startY) {
-          this.cells[startY][wallX + x].state = 'wall';
-        }
-      }
-      for (let y = 1; y < endY - startY; y++) {
-        if (y !== passageY - startY) {
-          this.cells[startY + y][wallX].state = 'wall';
-        }
-      }
-
-      this.recursiveDivision(startX, startY, wallX, endY);
-      this.recursiveDivision(wallX, startY, endX, endY);
+    switch (algorithm) {
+      case 'Recursive Division':
+        recursiveDivision(this.cells, 0, 0, this.cols, this.rows);
+        break;
+      default:
+        console.warn('That algorithm is not registered!');
+        break;
     }
   };
 
@@ -126,16 +84,6 @@ export class GridState {
 
   private isValid = (x: number, y: number) => {
     return y >= 0 && y < this.rows && x >= 0 && x < this.cols;
-  };
-
-  private chooseOrientation = (width: number, height: number): Orientation => {
-    if (width < height) {
-      return 'vertical';
-    } else if (height < width) {
-      return 'horizontal';
-    } else {
-      return Math.round(Math.random()) ? 'horizontal' : 'vertical';
-    }
   };
 }
 

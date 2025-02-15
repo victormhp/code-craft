@@ -15,6 +15,7 @@
   const grid = getGridState();
 
   let isWall = $derived(grid.cells[y]?.[x]?.state === 'wall');
+  let isPath = $derived(grid.cells[y]?.[x]?.state === 'path');
   let isStart = $derived(x === grid.start.x && y === grid.start.y);
   let isTarget = $derived(x === grid.target.x && y === grid.target.y);
   let isDraggable = $derived(isStart || isTarget);
@@ -71,12 +72,13 @@
   ></td>
 {:else}
   <td
+    id="node"
     use:dropzone={{ dropEffect: 'move', dragoverClass: 'droppable' }}
     ondropzone={dropNode}
     onmouseenter={visitNode}
     onmousedown={toggleNode}
-    oncontextmenu={(event) => event.preventDefault()}
     class="max-w-full overflow-hidden border border-zinc-200 bg-zinc-100 select-none hover:opacity-80"
+    class:node-path={isPath}
     class:node-wall={isWall}
     style="width: {width}px; height: {height}px;"
   ></td>
@@ -96,18 +98,20 @@
     background-color: var(--color-red-500);
   }
 
-  .node-wall {
-    background-color: var(--color-zinc-800);
-    animation-name: wall-animation;
+  .node-path {
+    background-color: var(--color-cyan-500);
+    animation-name: node;
     animation-duration: 0.15s;
-    animation-timing-function: ease-out;
-    animation-direction: alternate;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-    animation-play-state: running;
   }
 
-  @keyframes wall-animation {
+  .node-wall {
+    background-color: var(--color-zinc-800);
+    animation-name: node;
+    animation-duration: 0.15s;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes node {
     0% {
       transform: scale(0.25);
     }

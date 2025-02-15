@@ -36,6 +36,7 @@
 <svelte:body onmousedown={press} onmouseup={release} ondragstart={press} ondragleave={release} />
 
 <table
+  oncontextmenu={(event) => event.preventDefault()}
   bind:clientWidth={gridWidth}
   bind:clientHeight={gridHeight}
   class="max-w-full border-collapse overflow-hidden"

@@ -1,28 +1,26 @@
 <script lang="ts">
   import PressableButton from '../ui/pressable-button.svelte';
   import { getGridState } from './pathfinding.svelte';
+  import type { MazeAlgorithms, PathfindingAlgorithms } from './pathfinding.types';
 
   const grid = getGridState();
 
-  const pathfindingAlgorithms = [{ label: 'Depth First Search', action: grid.generateMaze }];
-  let currPathfindingAlgorithm = $state(pathfindingAlgorithms[0]);
+  const pathfindingAlgorithms: PathfindingAlgorithms[] = ['Depth First Search'];
+  let currPathfindingAlgorithm = $state<PathfindingAlgorithms>('Depth First Search');
 
-  const mazeAlgorithms = [
-    { label: '-', action: grid.clearBoard },
-    { label: 'Recursive Division', action: grid.generateMaze }
-  ];
-  let currMazeAlgorithm = $state(mazeAlgorithms[0]);
+  const mazeAlgorithms: MazeAlgorithms[] = ['-', 'Recursive Division'];
+  let currMazeAlgorithm = $state<MazeAlgorithms>('-');
 
   const resetSettings = () => {
     grid.reset();
     currPathfindingAlgorithm = pathfindingAlgorithms[0];
-    currMazeAlgorithm = mazeAlgorithms[0];
+    currMazeAlgorithm = '-';
   };
 
   const clearBoard = () => {
     grid.clearBoard();
     currPathfindingAlgorithm = pathfindingAlgorithms[0];
-    currMazeAlgorithm = mazeAlgorithms[0];
+    currMazeAlgorithm = '-';
   };
 
   const settingsButtons = [
@@ -42,10 +40,10 @@
         id="pathfinding"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
         bind:value={currPathfindingAlgorithm}
-        onchange={currPathfindingAlgorithm.action}
+        onchange={() => grid.solveMaze(currPathfindingAlgorithm)}
       >
         {#each pathfindingAlgorithms as algorithm}
-          <option value={algorithm}>{algorithm.label}</option>
+          <option value={algorithm}>{algorithm}</option>
         {/each}
       </select>
     </div>
@@ -55,10 +53,10 @@
         id="maze"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
         bind:value={currMazeAlgorithm}
-        onchange={currMazeAlgorithm.action}
+        onchange={() => grid.generateMaze(currMazeAlgorithm)}
       >
         {#each mazeAlgorithms as algorithm}
-          <option value={algorithm}>{algorithm.label}</option>
+          <option value={algorithm}>{algorithm}</option>
         {/each}
       </select>
     </div>
