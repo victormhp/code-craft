@@ -3,6 +3,7 @@
   import { NavHome } from '$lib/components';
   import { appSettings } from '$lib/store.svelte';
   import { fade } from 'svelte/transition';
+  import PressableButton from '$lib/components/ui/pressable-button.svelte';
 
   const routes = [
     { title: 'Sorting Algorithms', img: './sorting.png', path: '/sorting' },
@@ -25,13 +26,11 @@
       class="grid w-full grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] place-items-center gap-8 select-none"
     >
       {#each routes as { title, img, path }}
-        <a href={path} class="contents">
-          <img
-            class="h-full rounded-lg border border-zinc-200/60 bg-zinc-50 px-8 py-4 shadow-md transition-transform hover:scale-[1.035]"
-            src={img}
-            alt={title}
-          />
-        </a>
+        <div class="h-full">
+          <PressableButton href={path} label={title}>
+            <img src={img} alt={title} />
+          </PressableButton>
+        </div>
       {/each}
     </section>
   {/if}

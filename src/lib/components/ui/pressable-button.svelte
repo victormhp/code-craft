@@ -5,27 +5,44 @@
   interface ButtonProps {
     children: Snippet;
     label: string;
+    href?: string;
+    action?: () => void;
     disabled?: boolean;
-    action: () => void;
   }
 
-  let { children, label = 'Pressable Button', disabled = false, action }: ButtonProps = $props();
+  let {
+    children,
+    href,
+    action,
+    label = 'Pressable Button',
+    disabled = false
+  }: ButtonProps = $props();
 </script>
 
-<button
-  type="button"
-  class="pushable"
-  aria-label={label}
-  {disabled}
-  aria-disabled={disabled}
-  onclick={action}
->
-  <span class="shadow"></span>
-  <span class="edge"></span>
-  <span class="front">
-    {@render children?.()}
-  </span>
-</button>
+{#if href}
+  <a {href} class="pushable" aria-label={label}>
+    <span class="shadow"></span>
+    <span class="edge"></span>
+    <span class="front">
+      {@render children?.()}
+    </span>
+  </a>
+{:else}
+  <button
+    type="button"
+    class="pushable"
+    aria-label={label}
+    {disabled}
+    aria-disabled={disabled}
+    onclick={action}
+  >
+    <span class="shadow"></span>
+    <span class="edge"></span>
+    <span class="front">
+      {@render children?.()}
+    </span>
+  </button>
+{/if}
 
 <style>
   .pushable {
@@ -62,7 +79,8 @@
   }
 
   .front {
-    display: block;
+    height: 100%;
+    display: flex;
     position: relative;
     padding: 0.75rem 2.5rem;
     border-radius: 12px;
