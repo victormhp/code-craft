@@ -103,12 +103,14 @@
     {
       label: 'Randomize',
       icon: 'material-symbols:shuffle-rounded',
+      color: 'text-violet-500',
       action: randomize,
       disabled: sortingSettings.isPlaying || sortingProgress.current > 0
     },
     {
       label: 'Previous Step',
       icon: 'material-symbols:fast-rewind-rounded',
+      color: 'text-cyan-400',
       action: stepBack,
       disabled: sortingSettings.isPlaying || !canStepBack
     },
@@ -117,18 +119,21 @@
       icon: sortingSettings.isPlaying
         ? 'material-symbols:pause-rounded'
         : 'material-symbols:play-arrow-rounded',
+      color: sortingSettings.isPlaying ? 'text-zinc-800' : 'text-emerald-500',
       action: play,
       disabled: !canStep
     },
     {
       label: 'Next Step',
       icon: 'material-symbols:fast-forward-rounded',
+      color: 'text-cyan-600',
       action: step,
       disabled: sortingSettings.isPlaying || !canStep
     },
     {
       label: 'Restart',
       icon: 'material-symbols:restart-alt-rounded',
+      color: 'text-red-500',
       action: restart,
       disabled: sortingSettings.isPlaying || sortingProgress.current < 1
     }
@@ -170,13 +175,12 @@
   <div class="space-y-4">
     <Progress max={sortingProgress.total - 1} value={sortingProgress.current} />
     <div
-      class="media flex justify-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm"
+      class="media flex justify-center gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm sm:gap-2"
     >
-      {#each mediaButtons as { label, icon, action, disabled }}
+      {#each mediaButtons as { label, icon, color, action, disabled }}
         <div>
           <PressableButton {label} {action} {disabled}>
-            <iconify-icon {icon} width="24" height="24" style="color: var(--color-zinc-800)"
-            ></iconify-icon>
+            <iconify-icon {icon} width="24" height="24" class={color}></iconify-icon>
           </PressableButton>
         </div>
       {/each}

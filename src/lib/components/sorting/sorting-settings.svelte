@@ -11,9 +11,9 @@
   ];
 </script>
 
-<div class="h-full w-full space-y-8 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
+<div class="h-full w-full space-y-12 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
   <div class="space-y-5">
-    <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Sorting Settings</h2>
+    <h2 class="border-b border-zinc-200 pb-2 font-virgil text-2xl font-bold">Sorting Settings</h2>
     <div class="flex grow flex-col items-start gap-1">
       <label class="pl-1 text-sm text-zinc-500" for="sorting">Algorithm</label>
       <select
@@ -72,7 +72,7 @@
     </div>
   </div>
   <div class="space-y-5">
-    <h2 class="border-b border-zinc-200 pb-2 text-lg font-bold">Visual Settings</h2>
+    <h2 class="border-b border-zinc-200 pb-2 text-2xl font-virgil font-bold">Visual Settings</h2>
     <div>
       <label class="pl-1 text-sm whitespace-nowrap text-zinc-500" for="rect-color">Rect Color</label
       >
@@ -80,7 +80,7 @@
         <input
           id="rect-color"
           bind:value={rectSettings.unorderedColor}
-          class="h-7 w-20 rounded-lg border-none shadow-sm"
+          class="h-7 w-20 rounded-lg border-none"
           name="rect-color"
           type="color"
           disabled={sortingProgress.current > 0}
@@ -97,7 +97,7 @@
             icon="material-symbols:restart-alt-rounded"
             width="20"
             height="20"
-            style="color: var(--color-zinc-800)"
+            class="text-zinc-800"
           ></iconify-icon>
         </button>
       </div>
@@ -110,7 +110,7 @@
         <input
           id="rect-moving-color"
           bind:value={rectSettings.movingColor}
-          class="h-7 w-20 rounded-lg border-none shadow-sm"
+          class="h-7 w-20 rounded-lg border-none"
           name="rect-moving-color"
           type="color"
           disabled={sortingProgress.current > 0}
@@ -127,7 +127,7 @@
             icon="material-symbols:restart-alt-rounded"
             width="20"
             height="20"
-            style="color: var(--color-zinc-800)"
+            class="text-zinc-800"
           ></iconify-icon>
         </button>
       </div>

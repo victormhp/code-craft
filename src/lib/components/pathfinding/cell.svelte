@@ -77,7 +77,7 @@
     ondropzone={dropNode}
     onmouseenter={visitNode}
     onmousedown={toggleNode}
-    class="max-w-full overflow-hidden border border-zinc-200 bg-zinc-100 select-none hover:opacity-80"
+    class="max-w-full overflow-hidden border border-zinc-300/80 bg-zinc-50 select-none hover:opacity-80"
     class:node-path={isPath}
     class:node-wall={isWall}
     style="width: {width}px; height: {height}px;"

@@ -7,30 +7,30 @@
   let isClosed = true;
   const closeParticleSettings = () => (isClosed = true);
   const toggleParticleSettings = () => (isClosed = !isClosed);
-  const toggleMenu = () => appSettings.isMenuOpened = !appSettings.isMenuOpened;
+  const toggleMenu = () => (appSettings.isMenuOpened = !appSettings.isMenuOpened);
 </script>
 
 <header class="z-50 w-full bg-transparent px-4 py-3 lg:px-16 lg:py-6">
   <nav class="flex items-center justify-between select-none">
     <div class="hidden lg:flex lg:gap-4">
       <a
-        class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
+        class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://www.linkedin.com/in/victormhp"
         target="_blank"
         aria-label="LinkedIn Link"
         rel="noopener noreferrer"
       >
-        <iconify-icon icon="ri:linkedin-fill" width="20" height="20" style="color: var(--color-zinc-900)"
+        <iconify-icon icon="ri:linkedin-fill" width="20" height="20" class="text-zinc-800"
         ></iconify-icon>
       </a>
       <a
-        class="rounded-lg bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
+        class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
         href="https://github.com/victormhp/code-craft"
         target="_blank"
         aria-label="Github Link"
         rel="noopener noreferrer"
       >
-        <iconify-icon icon="bi:github" width="20" height="20" style="color: var(--color-zinc-900)"></iconify-icon>
+        <iconify-icon icon="bi:github" width="20" height="20" class="text-zinc-800"></iconify-icon>
       </a>
     </div>
     <a class="homelink flex items-center gap-4" href="/">
@@ -47,7 +47,7 @@
           icon={appSettings.isMenuOpened ? 'lucide:eye-off' : 'lucide:eye'}
           width="20"
           height="20"
-          style="color: var(--color-zinc-900)"
+          class="text-color-800"
         ></iconify-icon>
       </button>
       <button
@@ -56,7 +56,7 @@
         aria-label="Toggle particles settings"
         onclick={toggleParticleSettings}
       >
-        <iconify-icon icon="lucide:settings-2" width="20" height="20" style="color: var(--color-zinc-900)"
+        <iconify-icon icon="lucide:settings-2" width="20" height="20" class="text-color-800"
         ></iconify-icon>
       </button>
       <div

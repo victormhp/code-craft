@@ -86,7 +86,7 @@
     border-radius: 12px;
     border: 1px solid var(--color-zinc-300);
     font-size: 1.25rem;
-    color: white;
+    color: var(--color-zinc-50);
     background: var(--color-zinc-50);
     will-change: transform;
     transform: translateY(-4px);
@@ -121,9 +121,9 @@
     outline: none;
   }
 
-  @media (width <= 40rem) {
+  @media (width < 64rem) {
     .front {
-      padding: 0.5rem 2rem;
+      padding: 0.5rem 1.75rem;
     }
   }
 </style>

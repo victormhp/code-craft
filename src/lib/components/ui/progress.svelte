@@ -25,7 +25,7 @@
   aria-valuemin={min}
   aria-valuemax={max - min}
 >
-  <div class="h-full rounded-lg bg-zinc-800 transition-all" style:width="{fillPercent}%"></div>
+  <div class="h-full rounded-lg bg-emerald-500 transition-all" style:width="{fillPercent}%"></div>
 </div>
 
 <style>

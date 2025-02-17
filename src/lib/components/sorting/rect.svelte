@@ -14,6 +14,6 @@
 </script>
 
 <div
-  class="flex origin-bottom items-center justify-center rounded-t-md border border-zinc-50"
+  class="flex origin-bottom items-center justify-center rounded-t-md border border-zinc-200"
   style="width: {width}px; height: {height}px; background-color: {color};"
 ></div>
