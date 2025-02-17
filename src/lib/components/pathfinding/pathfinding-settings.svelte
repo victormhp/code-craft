@@ -40,7 +40,7 @@
       label: 'Play',
       color: 'text-emerald-500',
       icon: 'material-symbols:play-arrow-rounded',
-      action: () => {}
+      action: () => grid.solveMaze(currPathfindingAlgorithm)
     }
   ];
 
@@ -64,7 +64,6 @@
         id="pathfinding"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
         bind:value={currPathfindingAlgorithm}
-        onchange={() => grid.solveMaze(currPathfindingAlgorithm)}
       >
         {#each pathfindingAlgorithms as algorithm}
           <option value={algorithm}>{algorithm}</option>

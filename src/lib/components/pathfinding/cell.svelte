@@ -14,10 +14,11 @@
 
   const grid = getGridState();
 
+  let isVisited = $derived(grid.cells[y]?.[x]?.visited);
   let isWall = $derived(grid.cells[y]?.[x]?.state === 'wall');
   let isPath = $derived(grid.cells[y]?.[x]?.state === 'path');
-  let isStart = $derived(x === grid.start.x && y === grid.start.y);
-  let isTarget = $derived(x === grid.target.x && y === grid.target.y);
+  let isStart = $derived(grid.cells[y]?.[x]?.state === 'start');
+  let isTarget = $derived(grid.cells[y]?.[x]?.state === 'target');
   let isDraggable = $derived(isStart || isTarget);
 
   function visitNode(event: MouseEvent) {
@@ -47,18 +48,16 @@
   function dropNode(event: CustomEvent) {
     event.preventDefault();
 
-    let [destX, destY] = event.detail.data.split('-');
-    destX = Number(destX);
-    destY = Number(destY);
+    let [currX, currY] = event.detail.data.split('-').map(Number);
+    const currCell = grid.cells[currY][currX];
 
-    if (destX === grid.start.x && destY === grid.start.y) {
-      grid.start.x = x;
-      grid.start.y = y;
-    } else if (destX === grid.target.x && destY === grid.target.y) {
-      grid.target.x = x;
-      grid.target.y = y;
+    if (currCell.state == 'start') {
+      grid.updateCell(x, y, 'start');
+    } else if (currCell.state == 'target') {
+      grid.updateCell(x, y, 'target');
     }
-    grid.updateCell(destX, destY, 'empty');
+
+    grid.updateCell(currX, currY, 'empty');
   }
 </script>
 
@@ -78,6 +77,7 @@
     onmouseenter={visitNode}
     onmousedown={toggleNode}
     class="max-w-full overflow-hidden border border-zinc-300/80 bg-zinc-50 select-none hover:opacity-80"
+    class:node-visited={isVisited}
     class:node-path={isPath}
     class:node-wall={isWall}
     style="width: {width}px; height: {height}px;"
@@ -90,16 +90,8 @@
     outline-offset: 0.1rem;
   }
 
-  .node-start {
-    background-color: var(--color-emerald-500);
-  }
-
-  .node-finish {
-    background-color: var(--color-red-500);
-  }
-
-  .node-path {
-    background-color: var(--color-cyan-500);
+  .node-visited {
+    background-color: var(--color-cyan-400);
     animation-name: node;
     animation-duration: 0.15s;
   }
@@ -109,6 +101,20 @@
     animation-name: node;
     animation-duration: 0.15s;
     animation-fill-mode: forwards;
+  }
+
+  .node-path {
+    background-color: var(--color-yellow-500);
+    animation-name: node;
+    animation-duration: 0.15s;
+  }
+
+  .node-start {
+    background-color: var(--color-emerald-500);
+  }
+
+  .node-finish {
+    background-color: var(--color-red-500);
   }
 
   @keyframes node {

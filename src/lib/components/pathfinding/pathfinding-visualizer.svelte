@@ -2,12 +2,11 @@
   import 'iconify-icon';
   import Cell from './cell.svelte';
   import { getGridState } from './pathfinding.svelte';
-  import type { Grid } from './pathfinding.types';
 
   const grid = getGridState();
 
+  let cellSize = 25;
   let mousePressed = $state(false);
-  let cellSize = $state(25);
   let gridHeight = $state(0);
   let gridWidth = $state(0);
 
@@ -16,18 +15,7 @@
   let xValues = $derived(Array.from({ length: cols }, (_, i) => i));
   let yValues = $derived(Array.from({ length: rows }, (_, i) => i));
 
-  const createGrid = () => {
-    const newGrid: Grid = Array.from({ length: rows }, () => []);
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < cols; x++) {
-        newGrid[y].push({ x, y, state: 'empty' });
-      }
-    }
-    grid.cells = newGrid;
-    grid.setStartAndTarget();
-  };
-
-  $effect(() => createGrid());
+  $effect(() => grid.createGrid(rows, cols));
 
   const press = () => (mousePressed = true);
   const release = () => (mousePressed = false);
