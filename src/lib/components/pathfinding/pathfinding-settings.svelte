@@ -11,6 +11,13 @@
   const mazeAlgorithms: MazeAlgorithms[] = ['-', 'Recursive Division'];
   let currMazeAlgorithm = $state<MazeAlgorithms>('-');
 
+  const speedOptions = [
+    { label: 'Slow', delay: 300 },
+    { label: 'Mid', delay: 100 },
+    { label: 'Fast', delay: 0 }
+  ];
+  let currSpeed = $state(0);
+
   const resetSettings = () => {
     grid.reset();
     currPathfindingAlgorithm = pathfindingAlgorithms[0];
@@ -88,9 +95,12 @@
       <select
         id="speed"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
+        bind:value={currSpeed}
+        onchange={() => (grid.delay = currSpeed)}
       >
-        <option>Slow</option>
-        <option>Fast</option>
+        {#each speedOptions as { label, delay }}
+          <option value={delay}>{label}</option>
+        {/each}
       </select>
     </div>
   </div>

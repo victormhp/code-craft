@@ -11,7 +11,10 @@ import { randomNumber } from '$lib/utils';
 
 export class GridState {
   visitFrame = 0;
+  visitTimeout = 0;
   pathFrame = 0;
+  pathTimeout = 0;
+  delay = $state(0);
   cells = $state<Grid>([]);
   rows = $derived(this.cells.length ?? 0);
   cols = $derived(this.cells[0]?.length ?? 0);
@@ -53,8 +56,7 @@ export class GridState {
   };
 
   clearBoard = () => {
-    cancelAnimationFrame(this.visitFrame);
-    cancelAnimationFrame(this.pathFrame);
+    this.clear();
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         const cell = this.cells[y][x];
@@ -67,8 +69,7 @@ export class GridState {
   };
 
   reset = () => {
-    cancelAnimationFrame(this.visitFrame);
-    cancelAnimationFrame(this.pathFrame);
+    this.clear();
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         const cell = this.cells[y][x];
@@ -77,6 +78,13 @@ export class GridState {
         cell.visited = false;
       }
     }
+  };
+
+  clear = () => {
+    clearTimeout(this.visitTimeout);
+    cancelAnimationFrame(this.visitFrame);
+    cancelAnimationFrame(this.pathFrame);
+    clearTimeout(this.pathTimeout);
   };
 
   //
@@ -181,6 +189,7 @@ export class GridState {
       if (c.state == 'target') {
         this.animatDfs(parents, c);
         return () => {
+          clearTimeout(this.visitTimeout);
           cancelAnimationFrame(this.visitFrame);
         };
       }
@@ -193,7 +202,9 @@ export class GridState {
         }
       }
 
-      this.visitFrame = requestAnimationFrame(step);
+      this.visitTimeout = setTimeout(() => {
+        this.visitFrame = requestAnimationFrame(step);
+      }, this.delay);
     };
 
     step();
@@ -209,17 +220,24 @@ export class GridState {
     }
 
     //Remove start and target
-    path.shift()
-    path.pop()
+    path.shift();
+    path.pop();
     path.reverse();
 
     let i = 0;
     const step = () => {
-      if (i >= path.length) return;
+      if (i >= path.length) {
+        return () => {
+          clearTimeout(this.pathTimeout);
+          cancelAnimationFrame(this.pathFrame);
+        };
+      }
       const c = path[i];
       c.state = 'path';
       i++;
-      requestAnimationFrame(step);
+      this.pathTimeout = setTimeout(() => {
+        this.pathFrame = requestAnimationFrame(step);
+      }, this.delay);
     };
 
     step();
