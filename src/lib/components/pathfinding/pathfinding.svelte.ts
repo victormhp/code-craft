@@ -7,7 +7,7 @@ import type {
   PathfindingAlgorithms,
   Orientation
 } from './pathfinding.types';
-import { randomNumber } from '$lib/utils';
+import { randomNumber, randomNumberRange } from '$lib/utils';
 
 export class GridState {
   cells = $state<Grid>([]);
@@ -57,7 +57,7 @@ export class GridState {
     }
   };
 
-  clear = () => {
+  clearAnimations = () => {
     this.isPlaying = false;
     clearTimeout(this.visitTimeout);
     cancelAnimationFrame(this.visitFrame);
@@ -66,7 +66,7 @@ export class GridState {
   };
 
   clearPath = () => {
-    this.clear();
+    this.clearAnimations();
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         const cell = this.cells[y][x];
@@ -79,7 +79,7 @@ export class GridState {
   };
 
   clearBoard = () => {
-    this.clear();
+    this.clearAnimations();
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         const cell = this.cells[y][x];
@@ -92,7 +92,7 @@ export class GridState {
   };
 
   reset = () => {
-    this.clear();
+    this.clearAnimations();
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         const cell = this.cells[y][x];
@@ -109,11 +109,17 @@ export class GridState {
   generateMaze = (algorithm: MazeAlgorithms) => {
     if (this.isPlaying) return;
     this.clearBoard();
-    this.walledPerimeter();
 
     switch (algorithm) {
       case 'Recursive Division':
+        this.walledPerimeter();
         this.recursiveDivision(this.cells, 0, 0, this.cols, this.rows);
+        break;
+      case 'BPS Vertical':
+        this.binarySpacePartitioning(this.cells, 0, 0, this.cols, this.rows, 'vertical');
+        break;
+      case 'BPS Horizontal':
+        this.binarySpacePartitioning(this.cells, 0, 0, this.cols, this.rows, 'horizontal');
         break;
       default:
         console.warn('That algorithm is not registered!');
@@ -175,6 +181,67 @@ export class GridState {
     }
   };
 
+  private binarySpacePartitioning(
+    grid: Grid,
+    x: number,
+    y: number,
+    cols: number,
+    rows: number,
+    orientation: Orientation
+  ) {
+    if (cols < 3 || rows < 3) return;
+
+    if (orientation === 'vertical') {
+      this.splitVertically(grid, x, y, cols, rows);
+    } else {
+      this.splitHorizontally(grid, x, y, cols, rows);
+    }
+  }
+
+  private splitVertically(grid: Grid, x: number, y: number, cols: number, rows: number) {
+    const wallX = x + randomNumberRange(1, cols - 2);
+    const passageY = y + randomNumber(rows);
+
+    for (let i = y; i < y + rows; i++) {
+      const cell = grid[i][wallX];
+      if (i !== passageY && cell.state !== 'start' && cell.state !== 'target') {
+        cell.state = 'wall';
+      }
+    }
+
+    this.binarySpacePartitioning(this.cells, x, y, wallX - x, rows, 'vertical'); // Left partition
+    this.binarySpacePartitioning(
+      this.cells,
+      wallX + 1,
+      y,
+      x + cols - (wallX + 1),
+      rows,
+      'vertical'
+    ); // Right partition
+  }
+
+  private splitHorizontally(grid: Grid, x: number, y: number, cols: number, rows: number) {
+    const wallY = y + randomNumberRange(1, rows - 2);
+    const passageX = x + randomNumber(cols);
+
+    for (let i = x; i < x + cols; i++) {
+      const cell = grid[wallY][i];
+      if (i !== passageX && cell.state !== 'start' && cell.state !== 'target') {
+        cell.state = 'wall';
+      }
+    }
+
+    this.binarySpacePartitioning(this.cells, x, y, cols, wallY - y, 'horizontal'); // Top partition
+    this.binarySpacePartitioning(
+      this.cells,
+      x,
+      wallY + 1,
+      cols,
+      y + rows - (wallY + 1),
+      'horizontal'
+    ); // Bottom partition
+  }
+
   //
   // Pathfinding
   //
@@ -187,6 +254,9 @@ export class GridState {
     switch (algorithm) {
       case 'Depth First Search':
         this.depthFirstSearch(this.cells, start);
+        break;
+      case 'Breadth First Search':
+        this.breadthFirstSearch(this.cells, start);
         break;
       default:
         console.warn('That algorithm is not registered!');
@@ -209,15 +279,15 @@ export class GridState {
       }
 
       const c = stack.pop() as GridCell;
-      if (!c.visited) {
-        c.visited = true;
-      }
-
       if (c.state == 'target') {
-        this.findPathDfs(parents, c);
+        this.animatePathDfs(parents, c);
         clearTimeout(this.visitTimeout);
         cancelAnimationFrame(this.visitFrame);
         return;
+      }
+
+      if (!c.visited) {
+        c.visited = true;
       }
 
       const neighbors = this.getNeighbors(grid, c);
@@ -236,7 +306,7 @@ export class GridState {
     step();
   };
 
-  private findPathDfs = (parents: Map<GridCell, GridCell | null>, target: GridCell) => {
+  private animatePathDfs = (parents: Map<GridCell, GridCell | null>, target: GridCell) => {
     const path: GridCell[] = [];
     let current: GridCell | null = target;
 
@@ -245,7 +315,6 @@ export class GridState {
       current = parents.get(current) || null;
     }
 
-    //Remove start and target
     path.shift();
     path.pop();
     path.reverse();
@@ -259,8 +328,7 @@ export class GridState {
         return;
       }
 
-      const c = path[i];
-      c.state = 'path';
+      path[i].state = 'path';
       i++;
 
       this.pathTimeout = setTimeout(() => {
@@ -268,6 +336,68 @@ export class GridState {
       }, this.delay);
     };
 
+    step();
+  };
+
+  private breadthFirstSearch = (grid: Grid, start: GridCell) => {
+    const queue: Grid = [[start]];
+
+    const step = () => {
+      if (queue.length == 0) {
+        this.isPlaying = false;
+        this.clearPath();
+        clearTimeout(this.visitTimeout);
+        cancelAnimationFrame(this.visitFrame);
+        return;
+      }
+
+      const path = queue.shift() as GridCell[];
+      const c = path[path.length - 1];
+      if (c.state == 'target') {
+        this.animatePathBfs(path);
+        clearTimeout(this.visitTimeout);
+        cancelAnimationFrame(this.visitFrame);
+        return;
+      }
+
+      if (!c.visited) {
+        c.visited = true;
+
+        const neighbors = this.getNeighbors(grid, c);
+        for (const n of neighbors) {
+          if (!n.visited) {
+            queue.push([...path, n]);
+          }
+        }
+      }
+
+      this.visitTimeout = setTimeout(() => {
+        this.visitFrame = requestAnimationFrame(step);
+      }, this.delay);
+    };
+
+    step();
+  };
+
+  private animatePathBfs = (path: GridCell[]) => {
+    path.shift();
+    path.pop();
+    let i = 0;
+    const step = () => {
+      if (i == path.length) {
+        this.isPlaying = false;
+        clearTimeout(this.pathTimeout);
+        cancelAnimationFrame(this.pathFrame);
+        return;
+      }
+
+      path[i].state = 'path';
+      i++;
+
+      this.pathTimeout = setTimeout(() => {
+        this.pathFrame = requestAnimationFrame(step);
+      }, this.delay);
+    };
     step();
   };
 
@@ -294,8 +424,12 @@ export class GridState {
     } else if (height < width) {
       return 'horizontal';
     } else {
-      return Math.round(Math.random()) ? 'horizontal' : 'vertical';
+      return this.chooseOrientationRandom();
     }
+  };
+
+  private chooseOrientationRandom = (): Orientation => {
+    return Math.round(Math.random()) ? 'horizontal' : 'vertical';
   };
 
   private getNeighbors = (grid: Grid, cell: GridCell) => {

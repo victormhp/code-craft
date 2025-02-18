@@ -5,10 +5,18 @@
 
   const grid = getGridState();
 
-  const pathfindingAlgorithms: PathfindingAlgorithms[] = ['Depth First Search'];
+  const pathfindingAlgorithms: PathfindingAlgorithms[] = [
+    'Depth First Search',
+    'Breadth First Search'
+  ];
   let currPathfindingAlgorithm = $state<PathfindingAlgorithms>('Depth First Search');
 
-  const mazeAlgorithms: MazeAlgorithms[] = ['-', 'Recursive Division'];
+  const mazeAlgorithms: MazeAlgorithms[] = [
+    '-',
+    'Recursive Division',
+    'BPS Vertical',
+    'BPS Horizontal'
+  ];
   let currMazeAlgorithm = $state<MazeAlgorithms>('-');
 
   const speedOptions = [
@@ -20,17 +28,22 @@
 
   const resetSettings = () => {
     grid.reset();
-    currPathfindingAlgorithm = pathfindingAlgorithms[0];
     currMazeAlgorithm = '-';
   };
 
   const clearBoard = () => {
     grid.clearBoard();
-    currPathfindingAlgorithm = pathfindingAlgorithms[0];
     currMazeAlgorithm = '-';
   };
 
   const settingsButtons = $derived([
+    {
+      label: 'Reset',
+      color: 'text-red-500',
+      icon: 'material-symbols:restart-alt-rounded',
+      action: resetSettings,
+      disabled: false
+    },
     {
       label: 'Clear Board',
       color: 'text-zinc-800',
@@ -39,10 +52,10 @@
       disabled: false
     },
     {
-      label: 'Reset',
-      color: 'text-red-500',
-      icon: 'material-symbols:restart-alt-rounded',
-      action: resetSettings,
+      label: 'Clear Path',
+      color: 'text-yellow-500',
+      icon: 'material-symbols:conversion-path-off',
+      action: grid.clearPath,
       disabled: false
     },
     {

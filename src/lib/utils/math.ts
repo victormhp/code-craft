@@ -3,7 +3,7 @@ export function randomNumber(max: number) {
 }
 
 export function randomNumberRange(min = 0, max: number) {
-  return Math.random() * (max - min) + min;
+  return Math.floor(Math.random() * (max - min) + min);
 }
 
 export function rangeArray(start: number, end: number) {

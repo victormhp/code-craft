@@ -5,7 +5,7 @@
 <header class="z-50 w-full border-b border-zinc-200 bg-zinc-50 px-4 py-2 shadow-xs lg:px-16">
   <nav class="flex items-center justify-between">
     <a class="homelink flex items-center" href="/">
-      <img class="size-18" src="logo-no-bg.svg" alt="Web logo" />
+      <img class="size-16" src="logo-no-bg.svg" alt="Web logo" />
       <h1 class="font-virgil text-2xl font-bold tracking-wider lg:text-3xl">Code Craft</h1>
     </a>
     <div class="flex gap-4">

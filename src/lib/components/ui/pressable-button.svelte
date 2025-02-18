@@ -121,6 +121,16 @@
     outline: none;
   }
 
+  .pushable:disabled .front {
+    transform: translateY(-2px);
+    transition: transform 34ms;
+  }
+
+  .pushable:disabled .shadow {
+    transform: translateY(4px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+
   @media (width < 64rem) {
     .front {
       padding: 0.5rem 1.75rem;
