@@ -9,11 +9,18 @@
     { label: 'Selection Sort', action: selectionSort },
     { label: 'Merge Sort', action: mergeSort }
   ];
+
+  const sortingSpeeds = [
+    { label: 'Slow', delay: 300 },
+    { label: 'Mid', delay: 100 },
+    { label: 'Fast', delay: 0 }
+  ];
+  let currSpeed = $state(0);
 </script>
 
 <div class="h-full w-full space-y-12 rounded-lg border border-zinc-200 bg-zinc-50 p-8 shadow-sm">
   <div class="space-y-5">
-    <h2 class="border-b border-zinc-200 pb-2 font-virgil text-2xl font-bold">Sorting Settings</h2>
+    <h2 class="font-virgil border-b border-zinc-200 pb-2 text-2xl font-bold">Sorting Settings</h2>
     <div class="flex grow flex-col items-start gap-1">
       <label class="pl-1 text-sm text-zinc-500" for="sorting">Algorithm</label>
       <select
@@ -40,19 +47,18 @@
       </select>
     </div>
     <div class="space-y-2">
-      <label for="delay">Delay: {sortingSettings.delay}ms</label>
+      <label class="pl-1 text-sm text-zinc-500" for="delay">Speed</label>
       <div class="flex gap-2">
-        <input
-          id="delay"
-          class="grow"
-          name="delay"
-          type="range"
-          bind:value={sortingSettings.delay}
-          min="0"
-          max="1000"
-          step="100"
-          disabled={sortingProgress.current > 0 && sortingSettings.isPlaying}
-        />
+        <select
+          id="order"
+          class="w-full rounded border border-zinc-200 bg-transparent p-2"
+          bind:value={currSpeed}
+          onchange={() => (sortingSettings.delay = currSpeed)}
+        >
+          {#each sortingSpeeds as { label, delay }}
+            <option value={delay}>{label}</option>
+          {/each}
+        </select>
       </div>
     </div>
     <div class="space-y-2">
@@ -72,7 +78,7 @@
     </div>
   </div>
   <div class="space-y-5">
-    <h2 class="border-b border-zinc-200 pb-2 text-2xl font-virgil font-bold">Visual Settings</h2>
+    <h2 class="font-virgil border-b border-zinc-200 pb-2 text-2xl font-bold">Visual Settings</h2>
     <div>
       <label class="pl-1 text-sm whitespace-nowrap text-zinc-500" for="rect-color">Rect Color</label
       >
