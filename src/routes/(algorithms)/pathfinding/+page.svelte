@@ -1,5 +1,5 @@
 <script lang="ts">
-import { PathfindingSettings, PathfindingVisualizer } from '$lib/components/pathfinding';
+  import { PathfindingSettings, PathfindingVisualizer } from '$lib/components/pathfinding';
   import { setGridState } from '$lib/components/pathfinding/pathfinding.svelte';
 
   setGridState();

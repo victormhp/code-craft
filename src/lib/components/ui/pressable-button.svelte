@@ -15,7 +15,7 @@
     href,
     action,
     label = 'Pressable Button',
-    disabled = false
+    disabled = $bindable(false)
   }: ButtonProps = $props();
 </script>
 

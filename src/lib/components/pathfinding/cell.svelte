@@ -67,6 +67,7 @@
     class="border border-zinc-200 select-none hover:opacity-80"
     class:node-start={isStart}
     class:node-finish={isTarget}
+    class:disabled={grid.isPlaying}
     style="width: {width}px; height: {height}px;"
   ></td>
 {:else}
@@ -80,6 +81,7 @@
     class:node-visited={isVisited}
     class:node-path={isPath}
     class:node-wall={isWall}
+    class:disabled={grid.isPlaying}
     style="width: {width}px; height: {height}px;"
   ></td>
 {/if}
@@ -88,6 +90,11 @@
   :global(.droppable) {
     outline: 1px solid var(--color-zinc-800);
     outline-offset: 0.1rem;
+  }
+
+  .disabled {
+    pointer-events: none;
+    cursor: not-allowed;
   }
 
   .node-visited {

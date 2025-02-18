@@ -10,16 +10,18 @@ import type {
 import { randomNumber } from '$lib/utils';
 
 export class GridState {
-  visitFrame = 0;
-  visitTimeout = 0;
-  pathFrame = 0;
-  pathTimeout = 0;
-  delay = $state(0);
   cells = $state<Grid>([]);
   rows = $derived(this.cells.length ?? 0);
   cols = $derived(this.cells[0]?.length ?? 0);
 
-  constructor() {}
+  visitFrame = 0;
+  visitTimeout = 0;
+  pathFrame = 0;
+  pathTimeout = 0;
+  isPlaying = $state(false);
+  delay = $state(0);
+
+  constructor() { }
 
   createGrid = (rows: number, cols: number) => {
     const newGrid: Grid = Array.from({ length: rows }, () => []);
@@ -55,6 +57,27 @@ export class GridState {
     }
   };
 
+  clear = () => {
+    this.isPlaying = false;
+    clearTimeout(this.visitTimeout);
+    cancelAnimationFrame(this.visitFrame);
+    cancelAnimationFrame(this.pathFrame);
+    clearTimeout(this.pathTimeout);
+  };
+
+  clearPath = () => {
+    this.clear();
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        const cell = this.cells[y][x];
+        if (cell.state == 'path') {
+          cell.state = 'empty';
+        }
+        cell.visited = false;
+      }
+    }
+  };
+
   clearBoard = () => {
     this.clear();
     for (let y = 0; y < this.rows; y++) {
@@ -80,17 +103,11 @@ export class GridState {
     }
   };
 
-  clear = () => {
-    clearTimeout(this.visitTimeout);
-    cancelAnimationFrame(this.visitFrame);
-    cancelAnimationFrame(this.pathFrame);
-    clearTimeout(this.pathTimeout);
-  };
-
   //
   // Maze Generation
   //
   generateMaze = (algorithm: MazeAlgorithms) => {
+    if (this.isPlaying) return;
     this.clearBoard();
     this.walledPerimeter();
 
@@ -163,7 +180,9 @@ export class GridState {
   //
   solveMaze = (algorithm: PathfindingAlgorithms) => {
     const start = this.getStart();
-    if (!start) return;
+    if (!start || this.isPlaying) return;
+    this.clearPath();
+    this.isPlaying = true;
 
     switch (algorithm) {
       case 'Depth First Search':
@@ -181,17 +200,24 @@ export class GridState {
     parents.set(start, null);
 
     const step = () => {
-      if (stack.length === 0) return;
+      if (stack.length === 0) {
+        this.isPlaying = false;
+        this.clearPath();
+        clearTimeout(this.visitTimeout);
+        cancelAnimationFrame(this.visitFrame);
+        return;
+      }
+
       const c = stack.pop() as GridCell;
       if (!c.visited) {
         c.visited = true;
       }
+
       if (c.state == 'target') {
-        this.animatDfs(parents, c);
-        return () => {
-          clearTimeout(this.visitTimeout);
-          cancelAnimationFrame(this.visitFrame);
-        };
+        this.findPathDfs(parents, c);
+        clearTimeout(this.visitTimeout);
+        cancelAnimationFrame(this.visitFrame);
+        return;
       }
 
       const neighbors = this.getNeighbors(grid, c);
@@ -210,7 +236,7 @@ export class GridState {
     step();
   };
 
-  private animatDfs = (parents: Map<GridCell, GridCell | null>, target: GridCell) => {
+  private findPathDfs = (parents: Map<GridCell, GridCell | null>, target: GridCell) => {
     const path: GridCell[] = [];
     let current: GridCell | null = target;
 
@@ -227,14 +253,16 @@ export class GridState {
     let i = 0;
     const step = () => {
       if (i >= path.length) {
-        return () => {
-          clearTimeout(this.pathTimeout);
-          cancelAnimationFrame(this.pathFrame);
-        };
+        this.isPlaying = false;
+        clearTimeout(this.pathTimeout);
+        cancelAnimationFrame(this.pathFrame);
+        return;
       }
+
       const c = path[i];
       c.state = 'path';
       i++;
+
       this.pathTimeout = setTimeout(() => {
         this.pathFrame = requestAnimationFrame(step);
       }, this.delay);

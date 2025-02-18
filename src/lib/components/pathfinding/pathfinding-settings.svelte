@@ -30,26 +30,29 @@
     currMazeAlgorithm = '-';
   };
 
-  const settingsButtons = [
+  const settingsButtons = $derived([
     {
       label: 'Clear Board',
       color: 'text-zinc-800',
       icon: 'material-symbols:ink-eraser',
-      action: clearBoard
+      action: clearBoard,
+      disabled: false
     },
     {
       label: 'Reset',
       color: 'text-red-500',
       icon: 'material-symbols:restart-alt-rounded',
-      action: resetSettings
+      action: resetSettings,
+      disabled: false
     },
     {
       label: 'Play',
       color: 'text-emerald-500',
       icon: 'material-symbols:play-arrow-rounded',
-      action: () => grid.solveMaze(currPathfindingAlgorithm)
+      action: () => grid.solveMaze(currPathfindingAlgorithm),
+      disabled: grid.isPlaying
     }
-  ];
+  ]);
 
   const symbols = [
     { label: 'Empty', color: 'bg-zinc-50' },
@@ -71,6 +74,7 @@
         id="pathfinding"
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
         bind:value={currPathfindingAlgorithm}
+        disabled={grid.isPlaying}
       >
         {#each pathfindingAlgorithms as algorithm}
           <option value={algorithm}>{algorithm}</option>
@@ -84,6 +88,7 @@
         class="w-full rounded border border-zinc-200 bg-zinc-50 p-2 text-xs sm:text-base"
         bind:value={currMazeAlgorithm}
         onchange={() => grid.generateMaze(currMazeAlgorithm)}
+        disabled={grid.isPlaying}
       >
         {#each mazeAlgorithms as algorithm}
           <option value={algorithm}>{algorithm}</option>
@@ -119,9 +124,9 @@
   <div
     class="flex h-full flex-wrap items-center justify-evenly gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-xs"
   >
-    {#each settingsButtons as { label, color, icon, action }}
-      <PressableButton {label} {action}>
-        <iconify-icon {icon} width="20" height="20" class={color}></iconify-icon>
+    {#each settingsButtons as btn}
+      <PressableButton label={btn.label} action={btn.action} disabled={btn.disabled}>
+        <iconify-icon icon={btn.icon} width="20" height="20" class={btn.color}></iconify-icon>
       </PressableButton>
     {/each}
   </div>
