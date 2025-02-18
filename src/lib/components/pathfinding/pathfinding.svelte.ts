@@ -288,15 +288,16 @@ export class GridState {
 
       if (!c.visited) {
         c.visited = true;
-      }
 
-      const neighbors = this.getNeighbors(grid, c);
-      for (const n of neighbors) {
-        if (!n.visited) {
-          stack.push(n);
-          parents.set(n, c);
+        const neighbors = this.getNeighbors(grid, c);
+        for (const n of neighbors) {
+          if (!n.visited) {
+            stack.push(n);
+            parents.set(n, c);
+          }
         }
       }
+
 
       this.visitTimeout = setTimeout(() => {
         this.visitFrame = requestAnimationFrame(step);

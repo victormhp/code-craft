@@ -49,7 +49,7 @@
       color: 'text-zinc-800',
       icon: 'material-symbols:ink-eraser',
       action: clearBoard,
-      disabled: false
+      disabled: grid.isPlaying
     },
     {
       label: 'Clear Path',
