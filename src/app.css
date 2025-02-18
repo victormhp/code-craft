@@ -1,25 +1,44 @@
 @import 'tailwindcss';
 
 @font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-weight: normal;
+  src: url('/fonts/Assistant/Assistant-Regular.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-weight: 500;
+  src: url('/fonts/Assistant/Assistant-Medium.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-weight: 600;
+  src: url('/fonts/Assistant/Assistant-SemiBold.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-weight: bold;
+  src: url('/fonts/Assistant/Assistant-Bold.ttf') format('ttf');
+}
+
+@font-face {
   font-family: 'Virgil';
   font-style: normal;
   font-weight: 600;
   src: url('/fonts/Virgil.woff2') format('woff2');
 }
 
-@font-face {
-  font-family: 'Roboto';
-  font-weight: normal;
-  font-style: normal;
-  src:
-    url('/fonts/roboto.woff2') format('woff2'),
-    url('/fonts/roboto.woff') format('woff');
-}
-
 @theme {
   --font-virgil: 'Virgil', Arial, sans-serif;
-  --font-orange: 'Cartoon', Arial, sans-serif;
-  --font-roboto: 'Roboto', Arial, sans-serif;
+  --font-assistant: 'Assistant', system-ui, BlinkMacSystemFont, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
 }
 
 @layer base {
@@ -31,7 +50,7 @@
     width: 100%;
     min-height: 100dvh;
     background-color: var(--color-zinc-50);
-    font-family: 'Roboto';
+    font-family: var(--font-assistant);
     display: grid;
     grid-template-rows: auto 1fr;
   }

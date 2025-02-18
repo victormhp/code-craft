@@ -10,7 +10,7 @@
   const toggleMenu = () => (appSettings.isMenuOpened = !appSettings.isMenuOpened);
 </script>
 
-<header class="z-50 w-full bg-transparent px-4 py-3 lg:px-16 lg:py-6">
+<header class="z-50 w-full bg-transparent px-4 py-2 lg:px-16">
   <nav class="flex items-center justify-between select-none">
     <div class="hidden lg:flex lg:gap-4">
       <a
@@ -33,9 +33,9 @@
         <iconify-icon icon="bi:github" width="20" height="20" class="text-zinc-800"></iconify-icon>
       </a>
     </div>
-    <a class="homelink flex items-center gap-4" href="/">
-      <img src="logo-no-bg.svg" alt="Web logo" />
-      <h1 class="font-virgil text-2xl font-bold tracking-wider lg:text-4xl">Code Craft</h1>
+    <a class="homelink flex items-center" href="/">
+      <img class="size-16 lg:size-22" src="logo-no-bg.svg" alt="Web logo" />
+      <h1 class="font-virgil text-3xl font-bold tracking-wider lg:text-4xl">Code Craft</h1>
     </a>
     <div class="relative flex gap-4">
       <button

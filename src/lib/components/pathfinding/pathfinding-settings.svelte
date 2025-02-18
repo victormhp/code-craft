@@ -55,7 +55,7 @@
   ]);
 
   const symbols = [
-    { label: 'Empty', color: 'bg-zinc-50' },
+    { label: 'Unvisited', color: 'bg-zinc-50' },
     { label: 'Visited', color: 'bg-cyan-400' },
     { label: 'Wall', color: 'bg-zinc-800' },
     { label: 'Path', color: 'bg-yellow-500' },
@@ -111,12 +111,12 @@
   </div>
 
   <div
-    class="grid h-full w-full grid-cols-[repeat(auto-fit,minmax(75px,1fr))] items-center gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-xs"
+    class="grid h-full w-full grid-cols-[repeat(auto-fit,minmax(120px,1fr))] items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-xs"
   >
     {#each symbols as { label, color }}
       <div class="flex gap-2">
-        <div class={`h-6 w-6 rounded border border-zinc-300 ${color}`}></div>
-        <p>{label}</p>
+        <div class={`h-6 min-w-6 rounded border border-zinc-300 ${color}`}></div>
+        <p class="text-sm md:text-base">{label}</p>
       </div>
     {/each}
   </div>
