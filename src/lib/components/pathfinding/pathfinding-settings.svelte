@@ -135,11 +135,11 @@
   </div>
 
   <div
-    class="flex h-full flex-wrap items-center justify-evenly gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-xs"
+    class=" flex h-full w-full flex-wrap items-center justify-around gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-xs"
   >
-    {#each settingsButtons as btn}
-      <PressableButton label={btn.label} action={btn.action} disabled={btn.disabled}>
-        <iconify-icon icon={btn.icon} width="20" height="20" class={btn.color}></iconify-icon>
+    {#each settingsButtons as { label, icon, color, action, disabled }}
+      <PressableButton {label} {action} {disabled} class="p-0">
+        <iconify-icon {icon} width="20" height="20" class={color}></iconify-icon>
       </PressableButton>
     {/each}
   </div>

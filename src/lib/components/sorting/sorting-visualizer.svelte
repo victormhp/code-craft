@@ -179,7 +179,7 @@
     >
       {#each mediaButtons as {label, icon, color, action, disabled,}}
         <div>
-          <PressableButton {label} {action} {disabled}>
+          <PressableButton {label} {action} {disabled} class="px-0.5 py-1">
             <iconify-icon {icon} width="24" height="24" class={color}></iconify-icon>
           </PressableButton>
         </div>

@@ -27,7 +27,7 @@
   oncontextmenu={(event) => event.preventDefault()}
   bind:clientWidth={gridWidth}
   bind:clientHeight={gridHeight}
-  class="max-w-full border-collapse overflow-hidden"
+  class="min-h-[500px] max-w-full border-collapse overflow-hidden"
 >
   <tbody>
     {#each yValues as y (y)}

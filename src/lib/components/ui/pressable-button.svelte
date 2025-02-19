@@ -136,7 +136,7 @@
 
   @media (width < 64rem) {
     .front {
-      padding: 0.5rem 1.75rem;
+      padding: 0.625rem 2rem;
     }
   }
 </style>
