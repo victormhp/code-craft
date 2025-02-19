@@ -3,6 +3,7 @@
   import { ParticlesSettings } from '$lib/components/particles';
   import { clickOutside } from '$lib/utils';
   import { appSettings } from '$lib/store.svelte';
+  import { links } from '$lib/config';
 
   let isClosed = true;
   const closeParticleSettings = () => (isClosed = true);
@@ -15,7 +16,7 @@
     <div class="hidden lg:flex lg:gap-4">
       <a
         class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
-        href="https://www.linkedin.com/in/victormhp"
+        href={links.linkedin}
         target="_blank"
         aria-label="LinkedIn Link"
         rel="noopener noreferrer"
@@ -25,7 +26,7 @@
       </a>
       <a
         class="rounded-md bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
-        href="https://github.com/victormhp/code-craft"
+        href={links.linkedin}
         target="_blank"
         aria-label="Github Link"
         rel="noopener noreferrer"
@@ -33,7 +34,7 @@
         <iconify-icon icon="bi:github" width="20" height="20" class="text-zinc-800"></iconify-icon>
       </a>
     </div>
-    <a class="homelink flex items-center" href="/">
+    <a class="flex items-center" href="/">
       <img class="size-16 lg:size-22" src="logo-no-bg.svg" alt="Web logo" />
       <h1 class="font-virgil text-3xl font-bold tracking-wider lg:text-4xl">Code Craft</h1>
     </a>

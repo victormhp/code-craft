@@ -1,26 +1,29 @@
 <script lang="ts">
   // Giving credit to this amazing button https://www.joshwcomeau.com/animation/3d-button/
   import type { Snippet } from 'svelte';
+  import type { ClassValue } from 'svelte/elements';
 
   interface ButtonProps {
     children: Snippet;
     label: string;
+    class?: ClassValue;
     href?: string;
     action?: () => void;
     disabled?: boolean;
   }
 
-  let {
+  const {
     children,
     href,
-    action,
     label = 'Pressable Button',
+    action,
+    class: className,
     disabled = $bindable(false)
   }: ButtonProps = $props();
 </script>
 
 {#if href}
-  <a {href} class="pushable" aria-label={label}>
+  <a {href} class={['pushable', className]} aria-label={label}>
     <span class="shadow"></span>
     <span class="edge"></span>
     <span class="front">
@@ -30,7 +33,7 @@
 {:else}
   <button
     type="button"
-    class="pushable"
+    class={['pushable', className]}
     aria-label={label}
     {disabled}
     aria-disabled={disabled}

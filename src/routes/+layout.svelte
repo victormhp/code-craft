@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import '../app.css';
   import { onNavigate } from '$app/navigation';
 

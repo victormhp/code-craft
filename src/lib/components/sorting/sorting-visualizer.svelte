@@ -177,10 +177,10 @@
     <div
       class="media flex justify-center gap-4 rounded-lg border border-zinc-200 bg-zinc-100 p-4 shadow-sm sm:gap-2"
     >
-      {#each mediaButtons as btn}
+      {#each mediaButtons as {label, icon, color, action, disabled,}}
         <div>
-          <PressableButton label={btn.label} action={btn.action} disabled={btn.disabled}>
-            <iconify-icon icon={btn.icon} width="24" height="24" class={btn.color}></iconify-icon>
+          <PressableButton {label} {action} {disabled}>
+            <iconify-icon {icon} width="24" height="24" class={color}></iconify-icon>
           </PressableButton>
         </div>
       {/each}
