@@ -152,8 +152,9 @@ export class GridState {
       const passageX = possiblePassages[randomNumber(possiblePassages.length - 1)];
 
       for (let x = 1; x < endX - startX; x++) {
-        if (x !== passageX - startX) {
-          grid[wallY][startX + x].state = 'wall';
+        const cell = grid[wallY][startX + x];
+        if (x !== passageX - startX && cell.state !== 'target') {
+          cell.state = 'wall';
         }
       }
 
@@ -171,8 +172,9 @@ export class GridState {
       const passageY = possibleWalls[randomNumber(possibleWalls.length - 1)];
 
       for (let y = 1; y < endY - startY; y++) {
-        if (y !== passageY - startY) {
-          grid[startY + y][wallX].state = 'wall';
+        const cell = grid[startY + y][wallX];
+        if (y !== passageY - startY && cell.state !== 'target') {
+          cell.state = 'wall';
         }
       }
 
@@ -297,7 +299,6 @@ export class GridState {
           }
         }
       }
-
 
       this.visitTimeout = setTimeout(() => {
         this.visitFrame = requestAnimationFrame(step);
