@@ -135,7 +135,7 @@
       icon: 'material-symbols:restart-alt-rounded',
       color: 'text-red-500',
       action: restart,
-      disabled: sortingSettings.isPlaying || sortingProgress.current < 1
+      disabled: sortingSettings.isPlaying
     }
   ]);
 
