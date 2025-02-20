@@ -47,7 +47,7 @@
       </select>
     </div>
     <div class="space-y-2">
-      <label class="pl-1 text-sm text-zinc-500" for="delay">Speed</label>
+      <label class="pl-1 text-sm text-zinc-500" for="speed">Speed</label>
       <div class="flex gap-2">
         <select
           id="speed"
