@@ -1,4 +1,4 @@
-import { getContext, setContext } from 'svelte';
+import { getContext, onDestroy, setContext } from 'svelte';
 import type {
   Grid,
   GridCell,
@@ -21,7 +21,11 @@ export class GridState {
   isPlaying = $state(false);
   delay = $state(0);
 
-  constructor() { }
+  constructor() {
+    onDestroy(() => {
+      this.clearAnimations();
+    });
+  }
 
   createGrid = (rows: number, cols: number) => {
     const newGrid: Grid = Array.from({ length: rows }, () => []);
