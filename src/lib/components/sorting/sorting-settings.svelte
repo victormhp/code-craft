@@ -50,7 +50,7 @@
       <label class="pl-1 text-sm text-zinc-500" for="delay">Speed</label>
       <div class="flex gap-2">
         <select
-          id="order"
+          id="speed"
           class="w-full rounded border border-zinc-200 bg-transparent p-2"
           bind:value={currSpeed}
           onchange={() => (sortingSettings.delay = currSpeed)}
