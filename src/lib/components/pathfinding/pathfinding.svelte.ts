@@ -23,8 +23,8 @@ export class GridState {
 
   constructor() {
     onDestroy(() => {
-      clearTimeout(this.visitTimeout)
-      clearTimeout(this.pathTimeout)
+      clearTimeout(this.visitTimeout);
+      clearTimeout(this.pathTimeout);
     });
   }
 

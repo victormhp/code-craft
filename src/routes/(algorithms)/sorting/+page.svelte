@@ -1,5 +1,9 @@
 <script lang="ts">
   import { SortingSettings, SortingVisualizer } from '$lib/components/sorting';
+  import { setSortingState, setRectState } from '$lib/components/sorting/sorting.svelte';
+
+  setSortingState();
+  setRectState();
 </script>
 
 <svelte:head>

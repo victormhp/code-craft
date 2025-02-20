@@ -1,7 +1,10 @@
 <script lang="ts">
   import 'iconify-icon';
-  import { sortingProgress, sortingSettings, rectSettings } from './sorting.svelte';
+  import { getSortingState, getRectState } from './sorting.svelte';
   import { bubbleSort, insertionSort, mergeSort, selectionSort } from './sorting.utils';
+
+  const sorting = getSortingState();
+  const rect = getRectState();
 
   const sortingAlgorithms = [
     { label: 'Bubble Sort', action: bubbleSort },
@@ -25,9 +28,9 @@
       <label class="pl-1 text-sm text-zinc-500" for="sorting">Algorithm</label>
       <select
         id="sorting"
-        bind:value={sortingSettings.algorithm}
+        bind:value={sorting.algorithm}
         class="w-full rounded border border-zinc-200 bg-transparent p-2"
-        disabled={sortingProgress.current > 0}
+        disabled={sorting.current > 0}
       >
         {#each sortingAlgorithms as { label, action }}
           <option value={action}>{label}</option>
@@ -38,9 +41,10 @@
       <label class="pl-1 text-sm text-zinc-500" for="order">Order</label>
       <select
         id="order"
-        bind:value={sortingSettings.order}
+        bind:value={sorting.order}
         class="w-full rounded border border-zinc-200 bg-transparent p-2"
-        disabled={sortingProgress.current > 0}
+        disabled={sorting.current > 0}
+        onchange={() => (sorting.values = sorting.generateRects())}
       >
         <option value="Random">Random</option>
         <option value="Reverse">Reverse</option>
@@ -53,7 +57,7 @@
           id="speed"
           class="w-full rounded border border-zinc-200 bg-transparent p-2"
           bind:value={currSpeed}
-          onchange={() => (sortingSettings.delay = currSpeed)}
+          onchange={() => (sorting.delay = currSpeed)}
         >
           {#each sortingSpeeds as { label, delay }}
             <option value={delay}>{label}</option>
@@ -62,17 +66,18 @@
       </div>
     </div>
     <div class="space-y-2">
-      <label for="rect-size">Size: {sortingSettings.size}</label>
+      <label for="rect-size">Size: {sorting.size}</label>
       <div class="flex gap-2">
         <input
           id="rect-size"
           class="grow"
           name="rect-size"
           type="range"
-          bind:value={sortingSettings.size}
+          bind:value={sorting.size}
           min="10"
           max="64"
-          disabled={sortingProgress.current > 0}
+          disabled={sorting.current > 0}
+          oninput={() => (sorting.values = sorting.generateRects())}
         />
       </div>
     </div>
@@ -85,19 +90,19 @@
       <div class="flex items-center gap-2 rounded border border-zinc-200 bg-transparent p-2">
         <input
           id="rect-color"
-          bind:value={rectSettings.unorderedColor}
+          bind:value={rect.unorderedColor}
           class="h-7 w-20 rounded-lg border-none"
           name="rect-color"
           type="color"
-          disabled={sortingProgress.current > 0}
+          disabled={sorting.current > 0}
         />
-        <p class:text-disabled={sortingProgress.current > 0}>{rectSettings.unorderedColor}</p>
+        <p class:text-disabled={sorting.current > 0}>{rect.unorderedColor}</p>
         <button
-          onclick={rectSettings.resetUnorderedColor}
+          onclick={rect.resetUnorderedColor}
           class="ml-auto rounded bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
           type="button"
           aria-label="Reset unordered rect color"
-          disabled={sortingProgress.current > 0}
+          disabled={sorting.current > 0}
         >
           <iconify-icon
             icon="material-symbols:restart-alt-rounded"
@@ -115,19 +120,19 @@
       <div class="flex items-center gap-2 rounded border border-zinc-200 bg-transparent p-2">
         <input
           id="rect-moving-color"
-          bind:value={rectSettings.movingColor}
+          bind:value={rect.movingColor}
           class="h-7 w-20 rounded-lg border-none"
           name="rect-moving-color"
           type="color"
-          disabled={sortingProgress.current > 0}
+          disabled={sorting.current > 0}
         />
-        <p class:text-disabled={sortingProgress.current > 0}>{rectSettings.movingColor}</p>
+        <p class:text-disabled={sorting.current > 0}>{rect.movingColor}</p>
         <button
-          onclick={rectSettings.resetMovingColor}
+          onclick={rect.resetMovingColor}
           class="ml-auto rounded bg-zinc-200 p-2 transition-colors hover:bg-zinc-300"
           type="button"
           aria-label="Reset moving rect color"
-          disabled={sortingProgress.current > 0}
+          disabled={sorting.current > 0}
         >
           <iconify-icon
             icon="material-symbols:restart-alt-rounded"
