@@ -24,7 +24,7 @@
       class="text-zinc-800"
     ></iconify-icon>
   </PressableButton>
-  <PressableButton label="Go to hanoi visualizer" action={hanoi.initHanoi}>
+  <PressableButton label="Go to hanoi visualizer" action={hanoi.goToHanoi}>
     <iconify-icon
       icon="material-symbols:play-arrow-rounded"
       width="32"
