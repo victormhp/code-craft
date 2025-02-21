@@ -1,7 +1,7 @@
 import { getContext, setContext } from 'svelte';
 import { generateRandomArray } from '$lib/utils';
 import { bubbleSort } from './sorting.utils';
-import type { SortingOrder, SortingFunction, SortingStatus, SortingHistory } from './sorting.types';
+import type { SortingOrder, SortingFunction, SortingStatus } from './sorting.types';
 
 export class SortingState {
   size = $state(15);
@@ -15,8 +15,8 @@ export class SortingState {
   currStatuses = $derived(this.history.statuses[this.current]);
   total = $derived(this.history.values.length);
 
-  frame = 0;
   timeout = 0;
+  frame = 0;
   isPlaying = $state(false);
 
   constructor() {
@@ -28,7 +28,7 @@ export class SortingState {
   };
 
   step = () => {
-    if (!this.canStep) return;
+    if (!this.canStep()) return;
     this.current += 1;
   };
 
@@ -37,7 +37,7 @@ export class SortingState {
   };
 
   stepBack = () => {
-    if (!this.canStepBack) return;
+    if (!this.canStepBack()) return;
     this.current -= 1;
   };
 
@@ -51,11 +51,6 @@ export class SortingState {
       return heights.sort((a, b) => b - a);
     }
     return heights;
-  };
-
-  sortRects = (nums: number[]): SortingHistory => {
-    const { values, statuses } = this.algorithm(nums);
-    return { values, statuses };
   };
 
   play = () => {
